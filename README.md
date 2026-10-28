@@ -3,55 +3,58 @@
 ## Table of Contents
 
 1. [Java Learning Handbook Basics to Advanced](#java-learning-handbook-basics-to-advanced)
-2. [How to use this handbook](#how-to-use-this-handbook)
-3. [Java versions and setup](#java-versions-and-setup)
-4. [How a Java program runs](#how-a-java-program-runs)
-5. [Syntax, identifiers, packages, and imports](#syntax-identifiers-packages-and-imports)
-6. [Variables, scope, and types](#variables-scope-and-types)
-7. [Operators and expressions](#operators-and-expressions)
-8. [Input, output, and formatting](#input-output-and-formatting)
-9. [Decision making and loops](#decision-making-and-loops)
-10. [Methods and parameter passing](#methods-and-parameter-passing)
-11. [Arrays and strings](#arrays-and-strings)
-12. [Classes, objects, and constructors](#classes-objects-and-constructors)
-13. [Encapsulation and access control](#encapsulation-and-access-control)
-14. [Inheritance, overriding, and polymorphism](#inheritance-overriding-and-polymorphism)
-15. [Abstract classes, interfaces, and composition](#abstract-classes-interfaces-and-composition)
-16. [Enums, records, and sealed types](#enums-records-and-sealed-types)
-17. [Object contracts and immutability](#object-contracts-and-immutability)
-18. [Generics](#generics)
-19. [Collections and data structures](#collections-and-data-structures)
-20. [Exceptions and resource management](#exceptions-and-resource-management)
-21. [Lambdas and functional interfaces](#lambdas-and-functional-interfaces)
-22. [Streams and Optional](#streams-and-optional)
-23. [Files, I/O, and serialization](#files-io-and-serialization)
-24. [Concurrency and virtual threads](#concurrency-and-virtual-threads)
-25. [JVM, memory, and performance](#jvm-memory-and-performance)
-26. [Reflection, annotations, and modules](#reflection-annotations-and-modules)
-27. [Networking and databases](#networking-and-databases)
-28. [Testing, debugging, and build tools](#testing-debugging-and-build-tools)
-29. [Design, security, and maintainability](#design-security-and-maintainability)
-30. [A practical Java program template](#a-practical-java-program-template)
-31. [Practice path and self-check](#practice-path-and-self-check)
-32. [Existing beginner notes](#basic-java-concepts)
-33. [Existing arrays refresher](#java-arrays-refresher)
-34. [Existing study roadmap](#java-mastery-roadmap-study-tracker)
-35. [Existing expanded reference notes](#expanded-java-notes-reference-index)
-36. [Existing Collections Framework reference](#java-collections-framework)
+2. [Java versions and setup](#java-versions-and-setup)
+3. [Compiling and Running a Java Program](#compiling-and-running-a-java-program)
+4. [Syntax, identifiers, packages, and imports](#syntax-identifiers-packages-and-imports)
+5. [Variables, scope, and types](#variables-scope-and-types)
+6. [Operators and expressions](#operators-and-expressions)
+7. [Input, output, and formatting](#input-output-and-formatting)
+8. [Decision making and loops](#decision-making-and-loops)
+9. [Methods and parameter passing](#methods-and-parameter-passing)
+10. [Arrays and strings](#arrays-and-strings)
+11. [Classes, objects, and constructors](#classes-objects-and-constructors)
+12. [Encapsulation and access control](#encapsulation-and-access-control)
+13. [Inheritance, overriding, and polymorphism](#inheritance-overriding-and-polymorphism)
+14. [Abstract classes, interfaces, and composition](#abstract-classes-interfaces-and-composition)
+15. [Enums, records, and sealed types](#enums-records-and-sealed-types)
+16. [Object contracts and immutability](#object-contracts-and-immutability)
+17. [Generics](#generics)
+18. [Collections and data structures](#collections-and-data-structures)
+19. [Exceptions and resource management](#exceptions-and-resource-management)
+20. [Lambdas and functional interfaces](#lambdas-and-functional-interfaces)
+21. [Streams and Optional](#streams-and-optional)
+22. [Files, I/O, and serialization](#files-io-and-serialization)
+23. [Concurrency and virtual threads](#concurrency-and-virtual-threads)
+24. [JVM, memory, and performance](#jvm-memory-and-performance)
+25. [Reflection, annotations, and modules](#reflection-annotations-and-modules)
+26. [Networking and databases](#networking-and-databases)
+27. [Testing, debugging, and build tools](#testing-debugging-and-build-tools)
+28. [Design, security, and maintainability](#design-security-and-maintainability)
+29. [A practical Java program template](#a-practical-java-program-template)
+30. [Practice path and self-check](#practice-path-and-self-check)
+31. [Existing beginner notes](#basic-java-concepts)
+32. [Existing arrays refresher](#java-arrays-refresher)
+33. [Existing study roadmap](#java-mastery-roadmap-study-tracker)
+34. [Existing expanded reference notes](#expanded-java-notes-reference-index)
+35. [Existing Collections Framework reference](#java-collections-framework)
 
-## Java Learning Handbook Basics to Advanced
+---
 
-This is the main learning path through Java: start with language fundamentals, then move through object-oriented programming, collections, errors, functional programming, I/O, concurrency, and the JVM. Each topic explains what it is, when it is useful, and what to check when writing code. Examples use modern Java syntax; Java 21 is a useful LTS baseline, but version-specific features are called out.
+## Introduction to Java
 
-Java is a large platform, so no single README can describe every library or framework. This handbook covers the language and core Java SE concepts most useful in application development, interviews, and data-structures-and-algorithms practice. The earlier notes and deeper reference sections below are retained for additional examples and revision.
+Java is a high-level, `class-based`, `object-oriented` programming language designed to have as few implementation dependencies as possible. First released by Sun Microsystems (led by James Gosling) in 1995, it is now owned and maintained by Oracle Corporation.
 
-## How to use this handbook
+Java’s core motto is `"Write Once, Run Anywhere"` (WORA). This means that once you write and compile your Java code, the compiled bytecode can execute flawlessly on any operating system (Windows, Mac, Linux) that supports the Java platform without needing to be recompiled.
 
-1. Read one section at a time and type the examples into a small program instead of only reading them.
-2. Change inputs and boundary cases; predict the output before running the program.
-3. For each concept, write one example of your own and explain why it is useful.
-4. Use the **Remember when coding** lists as review checklists, not as a replacement for understanding.
-5. Compile and run examples with the JDK version you intend to use. Some snippets are fragments to place inside a class or method, not complete source files.
+### Key Features:
+
+- **Object-Oriented**: Supports classes, inheritance, polymorphism
+- **Platform-independence**: compile to Bytecode
+- **Robust and Secure**: No direct memory manipulation
+- **Automatic memory management**
+- **Multithreading**:
+
+---
 
 ## Java versions and setup
 
@@ -79,7 +82,9 @@ Java also supports source-file launch mode for simple experiments (`java Hello.j
 - A JDK provides the compiler and developer tools; `java` launches code and `javac` compiles it.
 - Keep source files, package names, and build configuration aligned.
 
-## How a Java program runs
+---
+
+## Compiling and Running a Java Program
 
 The compiler translates `.java` source into `.class` bytecode. The JVM loads classes, verifies bytecode, and executes it. A JVM may interpret code and JIT-compile frequently used code into native machine code. Bytecode plus compatible platform APIs allow the same program to run on different operating systems; native libraries, file paths, encodings, and external services can still make an application platform-dependent.
 
@@ -95,9 +100,187 @@ The JDK includes development tools and runtime components. The JVM is the virtua
 - Bytecode is not the same thing as native machine code.
 - A JVM implementation is platform-specific even though Java bytecode is portable.
 
+---
+
+## Java Input, output, and formatting
+
+Java I/O commonly has two use cases: **console I/O**, for interacting with a user in a terminal, and **file I/O**, for reading and writing stored data. For files, Java provides byte streams for binary data and character streams for text.
+
+### Console input and output
+
+`System.in` is standard input, `System.out` writes normal output, and `System.err` writes diagnostic output. `print` does not add a line separator, `println` does, and `printf` formats values.
+
+`Scanner` is a convenient choice when reading typed tokens from the console:
+
+```java
+import java.util.Scanner;
+
+public class ConsoleExample {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter your name: ");
+        String name = scanner.nextLine();
+        System.out.print("Enter your age: ");
+        int age = scanner.nextInt();
+
+        System.out.printf("Hello, %s! Next year you will be %d.%n", name, age + 1);
+    }
+}
+```
+
+When mixing `nextInt()` (or another token-reading method) with `nextLine()`, remember that the token method leaves the rest of the line—including its line separator—to be read. Consume the remainder of that line before requesting the next full line. Avoid closing a `Scanner` that wraps `System.in` if the rest of the application still needs standard input.
+
+Use `printf` when output needs formatting. Common conversions include `%s` for strings, `%d` for integers, and `%.2f` for a decimal rounded to two places:
+
+```java
+double pi = 3.14159265;
+int itemCount = 5;
+System.out.printf("Count: %d, Pi: %.2f%n", itemCount, pi);
+```
+
+For line-oriented input where token parsing is not needed, `BufferedReader` reads complete lines. Its methods can throw `IOException`:
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+public class FastConsole {
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in, StandardCharsets.UTF_8));
+        System.out.print("Enter a line: ");
+        String text = reader.readLine();
+        System.out.println("Captured: " + text);
+    }
+}
+```
+
+### File I/O: text and binary data
+
+**Character streams** (`Reader` and `Writer`) are for text. Choose an explicit charset when reading or writing files so the text encoding is predictable. `Files.newBufferedReader` and `Files.newBufferedWriter` are convenient buffered APIs:
+
+```java
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class TextFileIO {
+    public static void main(String[] args) throws IOException {
+        Path path = Path.of("output.txt");
+
+        try (BufferedWriter writer =
+                     Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            writer.write("Line 1: Writing text.");
+            writer.newLine();
+            writer.write("Line 2: UTF-8 text.");
+        }
+
+        try (BufferedReader reader =
+                     Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+    }
+}
+```
+
+The try-with-resources statements close the readers and writers automatically, including when an exception occurs. Handle `IOException` at the appropriate application boundary rather than silently ignoring file errors.
+
+**Byte streams** (`InputStream` and `OutputStream`) are for raw bytes, such as images or binary files. `DataInputStream` and `DataOutputStream` add methods for writing and reading Java primitive values in binary form:
+
+```java
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+public class BinaryDataIO {
+    public static void main(String[] args) throws IOException {
+        Path path = Path.of("data.bin");
+
+        try (DataOutputStream out =
+                     new DataOutputStream(Files.newOutputStream(path))) {
+            out.writeInt(505);
+            out.writeDouble(99.95);
+            out.writeBoolean(false);
+        }
+
+        try (DataInputStream in =
+                     new DataInputStream(Files.newInputStream(path))) {
+            int score = in.readInt();
+            double price = in.readDouble();
+            boolean active = in.readBoolean();
+            System.out.printf("Score: %d, price: %.2f, active: %b%n",
+                    score, price, active);
+        }
+    }
+}
+```
+
+Read values in the same order and with the same types in which they were written. These streams are not a general-purpose format for exchanging data between unrelated systems; document or define the binary format when interoperability matters.
+
+Java also supports **object serialization** through `ObjectOutputStream` and `ObjectInputStream`. A class must implement `Serializable` to be serialized:
+
+```java
+import java.io.Serializable;
+
+class GameSave implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    int currentLevel = 4;
+    String profileName = "PlayerOne";
+}
+```
+
+Serialization writes an object graph to a binary stream. Deserialization can fail with `IOException` or `ClassNotFoundException`, and the resulting object requires a type cast. Do not deserialize data from untrusted sources; use a well-defined data format such as JSON for many application interchange and persistence needs.
+
+| Stream type    | Main abstractions                          | Typical use                                                       |
+| -------------- | ------------------------------------------ | ----------------------------------------------------------------- |
+| Character      | `Reader` / `Writer`                        | Encoded text files, logs, and other human-readable data           |
+| Byte           | `InputStream` / `OutputStream`             | Images and other raw binary data                                  |
+| Primitive data | `DataInputStream` / `DataOutputStream`     | Binary values such as integers and doubles, in a defined sequence |
+| Object data    | `ObjectInputStream` / `ObjectOutputStream` | Java object serialization; avoid untrusted input                  |
+
+**Remember when coding**
+
+- Validate input before using it as an array size, index, or domain value.
+- Close file resources with try-with-resources; be careful closing a `Scanner` or reader that wraps `System.in`, because that closes standard input.
+- Use `%n` in `printf` for a platform-appropriate line separator.
+- Choose character streams for text and byte streams for binary data; specify a charset when working with text files.
+
+---
+
 ## Syntax, identifiers, packages, and imports
 
+### Basic syntax
+
+The conventional launch method is `public static void main(String[] args)` (the parameter may also be written as `String... args`). The JVM launcher calls the recognized entry-point form; overloading `main` is allowed, but other overloads are not automatically selected as the entry point. A static method is hidden rather than overridden, so a subclass cannot override `main` in the polymorphic instance-method sense.
+
+```java
+public class Hello {
+    public static void main(String[] args) {
+        System.out.print("Hello ");   // Does not append a newline
+        System.out.println("Java");   // Appends a newline
+    }
+}
+```
+
+`public` makes the method accessible to the launcher, `static` lets it be called without constructing the class, and `void` means it returns no value. The argument array contains command-line arguments. A static initializer is not a substitute for a valid launch method on modern Java launchers.
+
+For a public top-level class, the source file name must match the class name (for example, `Hello` in `Hello.java`).
+
 Java is `case-sensitive`. Statements commonly end with `;`, and braces `{}` delimit classes, methods, and control-flow blocks. Whitespace and indentation improve readability but do not determine block structure.
+
+### Naming convention
 
 Identifiers name classes, methods, variables, packages, and other declarations. By convention, use `UpperCamelCase` for classes and records, `lowerCamelCase` for methods and variables, and `UPPER_SNAKE_CASE` for constants. Names cannot be Java keywords, cannot contain spaces, and must follow identifier rules.
 
@@ -122,7 +305,9 @@ public class StockService {
 - Avoid wildcard imports when explicit imports make dependencies clearer.
 - A module (introduced in Java 9) is a higher-level unit that can declare which packages it exports and which modules it requires. Packages and modules are related but not interchangeable.
 
-## Variables, scope, and types
+---
+
+## Data types
 
 A variable is a named reference or value with a type. The type determines the operations that are valid. Java is statically typed: the compiler checks types before the program runs.
 
@@ -161,9 +346,119 @@ Default field and array values include `0` for integer types, `0.0` for `double`
 - Validate nullable references before dereferencing; consider clear invariants and `Objects.requireNonNull`.
 - Use descriptive names and the narrowest sensible scope.
 
-### Operators and expressions
+---
 
-An expression produces a value. Operators combine or transform values. Common groups are arithmetic (`+ - * / %`), relational (`< <= > >=`), equality (`== !=`), logical (`&& || !`), bitwise (`& | ^ ~`), shifts (`<< >> >>>`), assignment (`=`, `+=`), increment/decrement (`++ --`), and conditional (`condition ? a : b`).
+## Type Casting
+
+In Java, there are two main types of casting:
+
+`Widening Casting `(automatic) - converting a smaller type to a larger type size
+byte -> short -> char -> int -> long -> float -> double
+
+`Narrowing Casting` (manual) - converting a larger type to a smaller type size
+double -> float -> long -> int -> char -> short -> byte
+
+---
+
+## Operators and expressions
+
+### Arithmetic Operators
+
+**Operators:** `+` `-` `*` `/` `%`
+
+- Integer division truncates toward zero: `5 / 2` is `2`, while `5.0 / 2` is `2.5`.
+- `%` gives the remainder and works with both integral and floating-point numeric types.
+- Integer arithmetic can overflow without throwing an exception.
+
+```java
+int a = 10;
+int b = 3;
+System.out.println(a + b); // 13
+System.out.println(a - b); // 7
+System.out.println(a * b); // 30
+System.out.println(a / b); // 3: integer division
+System.out.println(a % b); // 1: remainder
+```
+
+### Increment/Decrement
+
+`++` adds one and `--` subtracts one. Prefix form changes the value before the expression is evaluated; postfix form evaluates to the old value before changing it.
+
+```java
+int x = 5;
+int oldValue = x++; // oldValue is 5; x is now 6
+int newValue = ++x; // x is now 7; newValue is 7
+x--;                // x is now 6
+--x;                // x is now 5
+```
+
+### Assignment Operators
+
+**Operators:** `=` `+=` `-=` `*=` `/=` `%=` `&=` `|=` `^=` `<<=` `>>=` `>>>=`
+
+- Compound assignments combine an operation with assignment, such as `x += 3`.
+- Assignment operators associate right to left: `a = b = c` assigns `c` to `b`, then to `a`.
+- Use `==` to compare values; `=` assigns a value.
+
+```java
+int x = 5;
+x += 3; // x is now 8
+x *= 2; // x is now 16
+```
+
+### Relational Operators
+
+**Operators:** `==` `!=` `<` `>` `<=` `>=`
+
+- These comparisons produce a `boolean`.
+- `==` compares primitive values, but for object references it checks whether both refer to the same object.
+- Floating-point calculations can have rounding error; use a suitable tolerance when approximate numeric comparison is intended.
+
+```java
+System.out.println(5 == 5); // true
+System.out.println(5 != 3); // true
+System.out.println(5 < 3);  // false
+System.out.println(5 > 3);  // true
+System.out.println(5 <= 5); // true
+System.out.println(5 >= 6); // false
+```
+
+### Logical Operators
+
+**Operators:** `&&` `||` `!`
+
+- `&&` (AND) and `||` (OR) short-circuit: the right operand is evaluated only when needed.
+- `!` (NOT) negates a boolean expression.
+
+```java
+boolean a = true;
+boolean b = false;
+System.out.println(a && b); // false
+System.out.println(a || b); // true
+System.out.println(!a);     // false
+```
+
+### Operator Precedence (High to Low)
+
+1. Postfix: `expression++` `expression--` `()` `[]` `.`
+2. Unary: `++` `--` `+` `-` `!` `~` and casts
+3. Multiplicative: `*` `/` `%`
+4. Additive: `+` `-`
+5. Shift: `<<` `>>` `>>>`
+6. Relational: `<` `>` `<=` `>=` `instanceof`
+7. Equality: `==` `!=`
+8. Bitwise AND: `&`
+9. Bitwise XOR: `^`
+10. Bitwise OR: `|`
+11. Conditional AND: `&&`
+12. Conditional OR: `||`
+13. Ternary conditional: `?:`
+14. Assignment: `=` and compound assignment operators
+
+- Parentheses override precedence
+- Multiplication/division before addition/subtraction
+- Logical operators have lower precedence than relational operators
+- Use parentheses for clarity when unsure
 
 ```java
 int total = 17;
@@ -185,85 +480,345 @@ For objects, `==` checks whether two references identify the same object; use `e
 - Do not use `==` to compare string contents.
 - Prefer readable expressions over clever operator-heavy statements.
 
-### Input, output, and formatting
+---
 
-`System.out` writes normal output, `System.err` writes diagnostic output, and `System.in` is standard input. `print` writes without automatically adding a line separator; `println` adds one. `printf` formats values.
+## Control flow
+
+- **Branching:** `if` / `else`, `switch` (including newer switch expressions in supported Java versions)
+- **Loops:** `for`, enhanced `for` (for-each), `while`, `do` / `while`
+- **Loop control:** `break`, `continue`, and `return`
+
+### Conditional Statements
+
+#### if else
+
+Use `if` / `else` for conditional branches.
+
+#### Switch
+
+`switch` selects among multiple alternatives and can make that logic clearer than a long `if` / `else if` chain. Switch selectors may be `byte`, `short`, `char`, `int`, their wrapper types, `String`, or an enum. They cannot be `long`, `float`, `double`, or `boolean`.
+
+A traditional switch **statement** uses `case` labels followed by colons. Execution continues into later cases unless it exits with `break`, `return`, or another control transfer. This is called fall-through, and it can be intentional, but forgetting a `break` often causes bugs:
 
 ```java
-System.out.println("Enter your age:");
-int age = scanner.nextInt();
-System.out.printf("Age: %d%n", age);
+String role = "ADMIN";
+
+switch (role) {
+    case "USER":
+        System.out.println("Standard access granted.");
+        break;
+    case "ADMIN":
+        System.out.println("Full administrative access granted.");
+        break;
+    case "GUEST":
+        System.out.println("Limited access granted.");
+        break;
+    default:
+        System.out.println("Access denied: unknown role.");
+        break;
+}
 ```
 
-For console input, `Scanner` is beginner-friendly and parses tokens. When mixing `nextInt()` and `nextLine()`, remember that `nextInt()` leaves the line separator behind; consume the remainder of the line before reading the next full line. For very large input, buffered input and explicit parsing are often faster.
-
-**Remember when coding**
-
-- Validate input before using it as an array size, index, or domain value.
-- Close resources you own; `Scanner` wrapping `System.in` needs special care because closing it closes standard input.
-- Use `%n` in `printf` for a platform-appropriate line separator.
-
-### Decision making and loops
-
-Use `if` / `else` for conditional branches. `switch` is useful when one selector is compared against several discrete alternatives. Traditional switch statements can fall through between cases unless ended with `break`, `return`, or another control transfer. Arrow-style cases do not fall through.
-
-For a traditional `switch`, the selector can be `byte`, `short`, `char`, `int`, `Byte`, `Short`, `Character`, `Integer`, `String`, or an enum. It does **not** accept `long`, `Long`, `float`, `Float`, `double`, `Double`, or `boolean`. Modern Java also supports switch expressions and pattern matching for switch; pattern matching for switch was finalized in Java 21.
+Switch expressions, finalized in Java 14, produce a value. Arrow-style cases do not fall through, and multiple labels can share one result:
 
 ```java
-int day = 2;
-String name = switch (day) {
-    case 1 -> "Monday";
-    case 2 -> "Tuesday";
-    case 3 -> "Wednesday";
-    default -> "another day";
+String day = "SATURDAY";
+String typeOfDay = switch (day) {
+    case "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY" -> "Weekday";
+    case "SATURDAY", "SUNDAY" -> "Weekend";
+    default -> "Unknown day";
+};
+System.out.println(day + " is a " + typeOfDay);
+```
+
+For a multi-statement arm in a switch expression, use a block and `yield` to provide its value:
+
+```java
+int input = 2;
+int result = switch (input) {
+    case 1 -> 10;
+    case 2 -> {
+        int calculation = input * 5;
+        yield calculation;
+    }
+    default -> 0;
 };
 ```
 
-Use `for` when the iteration count or index matters, enhanced `for` when visiting each array/collection element, `while` when repetition depends on a condition, and `do-while` when the body must run at least once. `break` exits a loop or switch; `continue` skips to the next loop iteration.
+Switch expressions must produce a value for every possible case. A `default` arm is commonly used; when switching over an enum, the compiler can also verify that all enum constants are covered. Pattern matching for switch is available in Java 21 and later.
+
+**Remember when coding**
+
+- Use `break` in colon-style switch statements when you do not intend fall-through.
+- Prefer arrow-style cases when fall-through is not needed.
+- Include a suitable `default` or cover all enum constants in a switch expression.
+
+### Loops
+
+#### For loop
+
+Java provides a traditional counter-based `for` loop, an enhanced `for` loop for arrays and `Iterable` values, and the `forEach` method for collections.
+
+The traditional `for` loop runs its initializer once, checks its condition before each iteration, and runs its update expression after each iteration:
 
 ```java
-for (int i = 0; i < 3; i++) {
-    System.out.println(i);
+for (int i = 1; i <= 3; i++) {
+    System.out.print(i + " ");
 }
 
-int remaining = 3;
-while (remaining > 0) {
-    remaining--;
+for (int i = 5; i > 0; i -= 2) {
+    System.out.print(i + " ");
 }
 ```
+
+The counter does not have to be an `int`; for example, a `long` or `char` can be used when appropriate. `int` is the usual choice for counting iterations and indexing arrays: Java array indexes and array lengths use `int`, so a `long` index must be converted before it can index an array. Prefer an integer counter over `float` or `double` for a fixed number of iterations, because many decimal fractions cannot be represented exactly in binary:
+
+```java
+for (double value = 0.0; value < 1.0; value += 0.1) {
+    System.out.println(value); // Rounding can make the iteration count surprising.
+}
+```
+
+For a fixed number of steps, count with integers instead. If a loop represents a range of decimal values, use a bounded comparison and account for floating-point rounding.
+
+You can declare multiple variables of the same type in the initializer and update them in the same loop:
+
+```java
+for (int i = 0, j = 10; i < j; i++, j--) {
+    System.out.println("i: " + i + ", j: " + j);
+}
+```
+
+An enhanced `for` loop can iterate over **any array** or any object that implements `Iterable`. The loop variable's type must be compatible with each element's type. Arrays can contain primitive values or object references; collections such as `ArrayList` and `HashSet` contain objects (primitive values are represented by wrapper classes such as `Double`):
+
+```java
+String[] fruits = {"Apple", "Banana", "Cherry"};
+for (String fruit : fruits) {
+    System.out.println(fruit);
+}
+
+double[] prices = {19.99, 5.50, 45.00};
+for (double price : prices) {
+    System.out.println("Price: " + price);
+}
+```
+
+The loop variable receives the current element's value. Assigning a different value to that variable does not replace the element in its array or collection. To replace array elements by index, use a traditional loop; for collections, use an appropriate collection operation or iterator. A `Map` is not `Iterable`; iterate over its `entrySet()`, `keySet()`, or `values()` instead.
+
+| Loop style        | What it iterates over                                                                                       | Common use                                            |
+| ----------------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Traditional `for` | Repeats while its boolean condition is true; initializer and update are regular Java expressions/statements | Indexes, counters, and custom step sizes              |
+| Enhanced `for`    | Arrays and objects implementing `Iterable`                                                                  | Visiting each element without managing an index       |
+| `forEach`         | A collection or other type that provides a `forEach` method                                                 | Applying a lambda or method reference to each element |
+
+Collections provide `forEach` for lambda-based iteration (Java 8 and later). A method reference is a concise alternative when the action is a direct method call:
+
+```java
+import java.util.List;
+
+List<String> fruits = List.of("Apple", "Banana", "Cherry");
+fruits.forEach(fruit -> System.out.println("Fruit: " + fruit));
+fruits.forEach(System.out::println);
+```
+
+`forEach` is a method on collections; it does not require streams. Stream pipelines also have a `forEach` terminal operation, but avoid relying on side effects in streams, especially parallel streams.
+
+An infinite `for` loop omits all three sections. Use one only when there is a clear exit path, such as a `break` or `return`:
+
+```java
+for (;;) {
+    System.out.println("Running once, then exiting.");
+    break;
+}
+```
+
+Use `for` when an index, iteration count, or custom step matters; enhanced `for` for straightforward traversal; and `while` or `do-while` when repetition is primarily condition-based.
 
 **Remember when coding**
 
 - Make loop progress explicit; a condition that never changes can create an infinite loop.
 - For array indexes, use `i < array.length`, not `i <= array.length`.
-- Use `break` deliberately in classic `switch` statements to avoid accidental fall-through.
-- Prefer a clear `switch` or lookup structure to a long chain of duplicated conditions.
+- Prefer enhanced `for` when you do not need an index.
+- Avoid changing a collection's structure while iterating unless using an iteration-safe approach.
 
-### Methods and parameter passing
+### Jump statements
 
-A method defines reusable behavior. Its declaration includes an access level, optional modifiers, return type, name, parameter list, and body. A method's **signature** is its name and parameter types; the return type alone cannot distinguish overloaded methods.
+`break` and `continue` alter the normal flow of loops. In Java, labels can target enclosing statements, which is especially useful with nested loops.
+
+An **unlabeled `break`** exits the innermost enclosing loop or `switch`. Execution resumes after that loop or switch:
 
 ```java
-static int square(int number) {
-    return number * number;
+for (int i = 1; i <= 10; i++) {
+    if (i == 5) {
+        break;
+    }
+    System.out.print(i + " ");
+}
+// Prints: 1 2 3 4
+```
+
+An **unlabeled `continue`** skips the rest of the current loop iteration. In a traditional `for` loop, the update expression runs before the condition is checked again. In a `while` loop, control returns directly to the condition, so ensure that any counter update is not skipped:
+
+```java
+for (int i = 1; i <= 5; i++) {
+    if (i == 3) {
+        continue;
+    }
+    System.out.print(i + " ");
+}
+// Prints: 1 2 4 5
+```
+
+A **labeled statement** is written with an identifier followed by a colon before a statement. A labeled `break` exits the labeled statement, allowing it to leave multiple nested loops:
+
+```java
+search:
+for (int row = 0; row < 3; row++) {
+    for (int column = 0; column < 3; column++) {
+        if (row == 1 && column == 1) {
+            break search;
+        }
+        System.out.println(row + ", " + column);
+    }
+}
+// The labeled break exits both loops.
+```
+
+A **labeled `continue`** skips to the next iteration of the labeled loop. In a nested loop, it can continue the outer loop rather than just advancing the inner loop:
+
+```java
+rows:
+for (int row = 0; row < 3; row++) {
+    for (int column = 0; column < 3; column++) {
+        if (column == 1) {
+            continue rows;
+        }
+        System.out.println(row + ", " + column);
+    }
+}
+// For each row, prints column 0, then continues with the next row.
+```
+
+An unlabeled `continue` applies to the innermost loop and cannot target a `switch`. A labeled `continue` must target a labeled loop. A labeled `break` may target a labeled loop, `switch`, or block. Use labels sparingly and give them clear names.
+
+**Remember when coding**
+
+- Use `break` when the current loop or switch should end early.
+- Use `continue` when only the current loop iteration should be skipped.
+- Prefer unlabeled statements for simple cases; use labels when they make nested-loop behavior clearer.
+
+---
+
+## Methods
+
+### Method basics
+
+A method is a named block of behavior. A declaration can include access modifiers, other modifiers such as `static`, a return type, a name, parameters, and a body. In this example, `a` and `b` are parameters; the values supplied when calling the method are arguments:
+
+```java
+public static int addNumbers(int a, int b) {
+    return a + b;
+}
+
+int total = addNumbers(3, 4); // 3 and 4 are arguments; total is 7
+```
+
+When calling a method with multiple parameters, provide the same number of arguments in the same order as the parameters. Each argument must be assignment-compatible with the corresponding parameter type (unless the method uses varargs):
+
+```java
+static void describe(String name, int age) {
+    System.out.println(name + " is " + age);
+}
+
+describe("Mina", 20); // name receives "Mina"; age receives 20
+```
+
+The return type specifies the kind of value returned. A method that returns no value uses `void`. A non-`void` method must return a compatible value on every path that completes normally. The method signature consists of its name and parameter types; the return type alone cannot distinguish overloads.
+
+### Types: Instance, static, and library methods
+
+An **instance method** is called on an object and can use that object's instance fields. A **static method** belongs to the class and can be called with the class name; it has no `this` reference and cannot directly access instance members. Java library methods, such as `Math.max` and `List.of`, are predefined APIs; methods written as part of an application are user-defined.
+
+```java
+class Counter {
+    private int value;
+
+    void increment() {             // Instance method
+        value++;
+    }
+
+    static int larger(int a, int b) { // Static method
+        return Math.max(a, b);
+    }
 }
 ```
 
-Methods can be overloaded by changing the parameter list. Overload selection happens at compile time. A method can be overridden in a subclass when it is an eligible instance method. `void` means the method returns no value. `return` exits a method and, for non-void methods, supplies its result.
+### Method overloading and overriding
 
-Java is always **pass-by-value**. For an object argument, the value copied is the reference. A method can use that copied reference to mutate the same object, but assigning the parameter to another object does not change the caller's variable:
+**Overloading** defines multiple methods with the same name but different parameter lists. The compiler selects an overload using the argument types at the call site. Changing only the return type is not enough to overload a method.
 
 ```java
-static void changeFirst(int[] values) {
-    values[0] = 99;              // Mutates the shared array
-    values = new int[]{1, 2};    // Reassigns only the local parameter
+static int formatValue(int value) {
+    return value;
+}
+
+static String formatValue(String value) {
+    return value.trim();
 }
 ```
 
-Varargs (`Type... name`) let callers pass zero or more values; inside the method they behave like an array. A varargs parameter must be the final parameter.
+**Overriding** is different: a subclass provides a compatible implementation of an `inherited instance method`. The runtime object determines which overridden implementation runs. Static methods are hidden, not overridden.
+
+### Passing parameters
+
+Java is always **pass-by-value**: each parameter receives a copy of the argument's value. For a primitive, that value is the primitive itself. For an object, array, or collection, the copied value is a reference to the same object. A method can mutate that object through the reference, but reassigning its parameter does not reassign the caller's variable. `String` is immutable, so its contents cannot be changed through a method.
 
 ```java
-static int sum(int... values) {
+import java.util.List;
+
+static void demonstratePassing(int score, int[] numbers, List<String> names) {
+    score = 0;                    // Does not change the caller's primitive
+    if (numbers.length > 0) {
+        numbers[0] = 99;          // Mutates the caller's array
+    }
+    names.add("New name");        // Mutates the caller's collection
+    numbers = new int[]{1, 2};    // Reassigns only this local parameter
+}
+```
+
+Custom objects follow the same reference rule: changing the object's mutable state is visible through other references to that object. Passing an object does not give the method a special ability to change the caller's variable to refer to another object.
+
+### Returning values
+
+Use `return expression;` to provide a result whose type is compatible with the method's declared return type. Methods can return primitives, strings, arrays, collections, or custom objects. The returned reference identifies the same object; returning an array or collection does not make a copy automatically.
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+static int[] createNumbers() {
+    return new int[]{1, 2, 3};
+}
+
+static List<String> createNames() {
+    List<String> names = new ArrayList<>();
+    names.add("Ari");
+    return names;
+}
+
+static String greeting(String name) {
+    return "Hello, " + name;
+}
+```
+
+A `void` method may use `return;` to exit early, but does not return a value. If a method returns a mutable object, consider whether callers should be allowed to modify that object; use an immutable result or defensive copy when that better protects the API.
+
+### Varargs and recursion
+
+Varargs (`Type... name`) let a method accept zero or more arguments of one type. They are treated as an array inside the method and must be the final parameter:
+
+```java
+static int sum(int... values) { // Treated as an array
     int total = 0;
     for (int value : values) {
         total += value;
@@ -278,24 +833,267 @@ Recursion is a method calling itself. It needs a base case and progress toward t
 
 - Keep methods focused and give them meaningful names.
 - Validate arguments and document important preconditions.
+- Use `static` for behavior that does not depend on an instance; use instance methods for object behavior.
+- Do not confuse overloading with overriding, or assume Java passes objects by reference.
 - Avoid hidden mutation when callers expect a method to return a result.
-- Do not overload methods in ways that make calls ambiguous or surprising.
+- Avoid overloads that make calls ambiguous or surprising.
 
-### Arrays and strings
+---
 
-An array is a fixed-length object whose elements have one declared type. Indexing starts at zero; valid indexes are `0` through `length - 1`. Reading or writing outside that range throws `ArrayIndexOutOfBoundsException`. A two-dimensional Java array is an array of arrays, so rows can have different lengths.
+## Arrays
+
+Arrays store a fixed number of values of the same type. In Java, an array is an object: its length is fixed when it is created, its elements receive default values, and its indexes start at `0`.
+
+Declaring an array variable does not by itself create an array. Create one with an initializer or `new` before accessing its elements; otherwise, the reference may be `null` (or an uninitialized local variable may fail to compile). Accessing an element through `null` or using an index outside the array's bounds throws an exception.
+
+### One-dimensional arrays
 
 ```java
-int[] values = {4, 8, 12};
-for (int i = 0; i < values.length; i++) {
-    System.out.println(values[i]);
-}
-
-int[][] jagged = {{1, 2}, {3, 4, 5}};
-System.out.println(jagged[1][2]); // 5
+int[] arr = new int[5];              // Five ints, each initially 0
+int[] a = {1, 2, 3, 4, 5};           // Declare and initialize
+int[] b = new int[]{1, 2, 3};        // Explicit array creation
+int arr2[] = new int[5];             // Valid, but int[] arr2 is preferred
 ```
 
-Arrays are appropriate when the number of elements is known or fixed. Use `ArrayList` when a resizable indexed sequence is needed. Array length is the field `length`; collection length is generally the method `size()`.
+The array length is available through the `length` field:
+
+```java
+System.out.println(a.length);        // 5
+System.out.println(a[0]);            // 1 (first element)
+```
+
+### Array indexing and traversal
+
+Java arrays use **zero-based indexing**: the first element is at index `0`, and the last element is at index `length - 1`. For an array of length `5`, valid indexes are `0` through `4`. An index outside that range throws `ArrayIndexOutOfBoundsException`.
+
+```java
+int[] scores = {84, 91, 76};
+
+System.out.println(scores[0]);       // 84: first element
+System.out.println(scores[2]);       // 76: last element
+System.out.println(scores[scores.length - 1]); // Last element without hard-coding its index
+
+for (int i = 0; i < scores.length; i++) {
+    System.out.println("index " + i + " contains " + scores[i]);
+}
+
+for (int score : scores) {
+    System.out.println(score);       // Use when the index itself is not needed
+}
+```
+
+Use `i < array.length`, not `i <= array.length`, in an index-based loop: `array[array.length]` is already one position past the end. An empty array has length `0` and has no valid indexes.
+
+For a two-dimensional array, each index selects an array (row) first, then an element within that row. Both indexes are zero-based, and each row has its own length:
+
+```java
+int[][] grid = {
+    {10, 20, 30},
+    {40, 50, 60}
+};
+
+System.out.println(grid[0][0]);      // 10: first row, first column
+System.out.println(grid[1][2]);      // 60: second row, third column
+
+for (int row = 0; row < grid.length; row++) {
+    for (int column = 0; column < grid[row].length; column++) {
+        System.out.println(grid[row][column]);
+    }
+}
+```
+
+In a jagged array, use `array[row].length` for the selected row; rows do not necessarily have the same number of columns.
+
+### Arrays of different types and default values
+
+```java
+int[] numbers = new int[5];
+float[] prices = new float[5];
+double[] values = new double[5];
+char[] letters = new char[5];
+boolean[] flags = new boolean[5];
+String[] names = new String[5];
+```
+
+Each array holds elements of one type. These examples show common ways to declare and initialize arrays of integers, characters, and strings:
+
+```java
+int[] scores = {84, 91, 76};                  // Declare and initialize
+int[] moreScores = new int[3];                // Allocate with default values
+char[] letters = {'J', 'a', 'v', 'a'};
+String[] words = {"learn", "Java"};
+String[] moreWords = new String[2];           // Initially contains nulls
+```
+
+Use the array's `length` field (not a `length()` method) to get its number of elements. When an array is passed to `System.out.println`, the matching overload prints its object representation; arrays do not override `Object.toString()` to format their elements. The default representation resembles `className@hexHashCode` (for example, `[I@...` for an `int[]`). The hash code is not a memory address, and its exact value is not predictable.
+
+Use `Arrays.toString` for a readable one-dimensional representation, or loop through the elements. `println` has a special overload for `char[]` that prints its characters as text; `Arrays.toString(charArray)` instead prints the characters separated and enclosed in brackets:
+
+```java
+import java.util.Arrays;
+
+int[] values = {10, 20, 30};
+char[] letters = {'J', 'a', 'v', 'a'};
+
+System.out.println(values);                  // Object representation, not the elements
+System.out.println(Arrays.toString(values));  // [10, 20, 30]
+System.out.println(letters);                 // Java
+System.out.println(Arrays.toString(letters));// [J, a, v, a]
+
+System.out.println(scores.length);             // 3
+System.out.println(Arrays.toString(scores));   // [84, 91, 76]
+System.out.println(Arrays.toString(words));    // [learn, Java]
+
+for (int score : scores) {
+    System.out.println(score);
+}
+for (char letter : letters) {
+    System.out.println(letter);
+}
+for (String word : words) {
+    System.out.println(word);
+}
+```
+
+| Element type                      | Default value                   |
+| --------------------------------- | ------------------------------- |
+| `byte`, `short`, `int`, `long`    | `0`                             |
+| `float`                           | `0.0f`                          |
+| `double`                          | `0.0`                           |
+| `char`                            | `'\u0000'` (the null character) |
+| `boolean`                         | `false`                         |
+| Reference types, such as `String` | `null`                          |
+
+### Initializing and updating arrays
+
+```java
+int[] initialized = {10, 20, 30};
+int[] explicit = new int[]{10, 20, 30};
+
+int[] values2 = new int[5];
+values2[0] = 10;
+values2[1] = 20;
+```
+
+An array initializer in braces can be used directly in a declaration, but not by itself in a later assignment:
+
+```java
+int[] values3 = {1, 2, 3};
+// values3 = {4, 5, 6};              // Does not compile
+values3 = new int[]{4, 5, 6};        // Correct reassignment
+
+printArray(new int[]{7, 8, 9});      // Anonymous array passed to a method
+```
+
+### Two-dimensional and jagged arrays
+
+A two-dimensional array is an array of arrays. It is often used for tables and grids:
+
+```java
+int[][] matrix = new int[3][4];      // 3 rows, 4 columns
+matrix[1][2] = 7;                    // Row 1, column 2
+
+int[][] initializedMatrix = {
+    {1, 2, 3},
+    {4, 5, 6}
+};
+
+int[][] explicitMatrix = new int[][]{
+    {1, 2},
+    {3, 4}
+};
+```
+
+Rows can have different lengths; this is called a jagged array:
+
+```java
+int[][] jagged = new int[3][];
+jagged[0] = new int[2];
+jagged[1] = new int[4];
+jagged[2] = new int[3];
+```
+
+### Character arrays and strings
+
+```java
+char[] letters2 = {'h', 'e', 'l', 'l', 'o'};
+char[] emptyLetters = new char[5];
+
+String word = "hello";
+String[] words = {"hello", "world"};
+char firstCharacter = word.charAt(0);
+```
+
+A `String` is an object, not a `char[]`. Use `charAt(index)` to read one of its characters.
+
+### Arrays sized from input
+
+The size can be determined at runtime. It must be non-negative, and the array must fit within the JVM's implementation limits and available memory.
+
+```java
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        int[] numbers2 = new int[n];
+
+        for (int i = 0; i < numbers2.length; i++) {
+            numbers2[i] = sc.nextInt();
+        }
+
+        sc.close();
+    }
+}
+```
+
+The same applies to multidimensional arrays:
+
+```java
+int rows = 3;
+int columns = 4;
+int[][] runtimeMatrix = new int[rows][columns];
+
+int x = 2, y = 3, z = 4;
+int[][][] runtime3D = new int[x][y][z];
+```
+
+### When the size needs to change: `ArrayList`
+
+An array cannot grow or shrink after creation. Use `ArrayList` when the number of elements changes:
+
+```java
+import java.util.ArrayList;
+
+ArrayList<Integer> numbers3 = new ArrayList<>();
+numbers3.add(10);
+numbers3.add(20);
+numbers3.add(30);
+numbers3.remove(1);                   // Removes the element at index 1
+```
+
+`ArrayList<Integer>` stores `Integer` objects (with automatic boxing/unboxing), not primitive `int` values.
+
+### Quick revision
+
+| Need                                                  | Example                                     |
+| ----------------------------------------------------- | ------------------------------------------- |
+| Create a fixed-size array                             | `int[] a = new int[10];`                    |
+| Start with known values                               | `int[] a = {1, 2, 3};`                      |
+| Create an array for reassignment or a method argument | `new int[]{1, 2, 3}`                        |
+| Store a grid or matrix                                | `int[][] a = new int[3][4];`                |
+| Give rows different lengths                           | `int[][] a = new int[3][];`                 |
+| Store higher-dimensional data                         | `int[][][] a = new int[2][3][4];`           |
+| Set the size using input                              | `int[] a = new int[n];`                     |
+| Add and remove elements dynamically                   | `ArrayList<Integer> a = new ArrayList<>();` |
+
+For DSA practice, get comfortable with `int[]`, `int[][]`, `int[][][]`, and `ArrayList`. Remember: array sizes can be chosen at runtime, but an array's length cannot change after it is created.
+
+---
+
+## Strings
 
 `String` is an immutable reference type. Operations that appear to modify a string return a new string. Use `equals` for content equality and `charAt(index)` for a UTF-16 code unit; Unicode code points may span more than one `char`. Use `StringBuilder` when assembling many pieces in a loop.
 
@@ -316,9 +1114,11 @@ String result = builder.toString();
 
 For declarations, default values, multidimensional arrays, and more indexing examples, see the [arrays refresher](#java-arrays-refresher).
 
-### Classes, objects, and constructors
+---
 
-A class defines a type: its fields represent state, constructors establish valid initial state, and methods represent behavior. An object is an instance of a class created at runtime. A reference variable refers to an object; it is not the object itself.
+## Classes
+
+A `class` defines a type: its fields represent state, constructors establish valid initial state, and methods represent behavior. An `object` is an instance of a class created at runtime. A reference variable refers to an object; it is not the object itself.
 
 ```java
 class BankAccount {
@@ -386,6 +1186,8 @@ Inheritance expresses an **is-a** relationship. A Java class extends at most one
 
 **Overriding** replaces an inherited instance-method implementation while respecting the method contract. Use `@Override` so the compiler detects signature mistakes. A static method is hidden, not overridden; private methods are not inherited as overridable methods. A final method cannot be overridden, and a final class cannot be subclassed.
 
+Java has no `virtual` keyword. Overridable instance methods use runtime dispatch by default: when a subclass overrides a method, the implementation on the actual object's class is called. This is sometimes described as Java methods being "virtual by default," but it does not apply to `static` methods (which are hidden, not overridden), `private` methods (which are not inherited for overriding), or `final` methods (which cannot be overridden).
+
 ```java
 class Animal {
     String speak() {
@@ -451,21 +1253,50 @@ class AlertService {
 
 ### Enums, records, and sealed types
 
-An `enum` defines a fixed set of named instances. Enums can have fields, constructors, and methods; use them instead of unexplained integer or string constants when the set of values is known.
+An `enum` defines a fixed set of named instances. Unlike a set of integer constants, a Java enum is a reference type: it can have fields, constructors, and methods. Its constructors are implicitly private, and an enum cannot extend another class because it already extends `java.lang.Enum`.
 
 ```java
 enum Status {
-    NEW, IN_PROGRESS, DONE
+    LOW(1), MEDIUM(5), HIGH(10);
+
+    private final int value;
+
+    Status(int value) {
+        this.value = value;
+    }
+
+    int value() {
+        return value;
+    }
+}
+
+Status current = Status.HIGH;
+System.out.println(current);         // HIGH
+System.out.println(current.value()); // 10
+
+for (Status status : Status.values()) {
+    System.out.println(status);
 }
 ```
 
-A **record** (finalized in Java 16) is a concise data-carrier class. It provides component fields, accessors, `equals`, `hashCode`, and `toString`; records are shallowly immutable, so mutable objects referenced by components can still change.
+A **record** (finalized in Java 16) is a concise way to declare a data-carrier class. The compiler provides component accessors, `equals`, `hashCode`, and `toString`. Record components are final, but records are only shallowly immutable: a mutable object stored in a component can still change. Records are not identical to C or C++ `struct` types; they are Java classes with specific restrictions and generated behavior.
 
 ```java
 record Point(int x, int y) {}
+
+Point point = new Point(10, 20);
+System.out.println(point.x()); // 10
 ```
 
-**Sealed classes and interfaces** (finalized in Java 17) restrict which types may extend or implement them. Permitted subtypes declare whether they are `final`, `sealed`, or `non-sealed`. This is useful when a hierarchy has a deliberately limited set of cases.
+Java has no `struct` or `union` declaration. Use a class or record to group data. Java also has no raw, overlapping-memory union; to model a value that can be one of several types, use a type-safe design such as a sealed interface with permitted implementations.
+
+**Sealed classes and interfaces** (finalized in Java 17) restrict which types may extend or implement them. Permitted subtypes declare whether they are `final`, `sealed`, or `non-sealed`. This is useful when a hierarchy has a deliberately limited set of cases:
+
+```java
+sealed interface Shape permits Circle, Rectangle {}
+record Circle(double radius) implements Shape {}
+record Rectangle(double width, double height) implements Shape {}
+```
 
 Other useful modern language features include switch expressions (Java 14), text blocks for multiline strings (Java 15), and pattern matching for `instanceof` (Java 16). Pattern matching for `switch` became a standard feature in Java 21. Always check the minimum Java release configured by the project.
 
@@ -708,7 +1539,20 @@ try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ### JVM, memory, and performance
 
-The JVM manages memory automatically. The heap holds objects and arrays; each thread has a stack of method frames and local execution state. Class metadata, program counters, and native memory are also part of the runtime picture. Exact layouts and garbage-collector behavior vary by JVM implementation. Class loaders load class definitions when needed; the built-in loader arrangement commonly includes bootstrap, platform, and application loaders.
+The JVM manages memory automatically. The heap holds objects and arrays; each thread has a stack of method frames and local execution state. A local variable whose type is a class holds a reference to an object, not the object's contents themselves. For example, a local `Player` variable may refer to a `Player` object containing a name and score. This is a useful conceptual model, but Java does not guarantee that each reference is a literal memory address or that every local is physically stored on the stack; JVM implementations and JIT optimizations can choose different layouts.
+
+Class metadata, program counters, and native memory are also part of the runtime picture. Exact layouts and garbage-collector behavior vary by JVM implementation. Class loaders load class definitions when needed; the built-in loader arrangement commonly includes bootstrap, platform, and application loaders.
+
+```java
+class Player {
+    String name = "Virat";
+    int score = 13000;
+}
+
+Player cric1 = new Player(); // cric1 refers to the Player object
+System.out.println(cric1.name);
+System.out.println(cric1.score);
+```
 
 Garbage collection reclaims objects that are no longer reachable; it does not guarantee immediate cleanup or close external resources. A memory leak can still occur when code accidentally keeps references to objects it no longer needs (for example, in an unbounded cache or a static collection).
 
@@ -1006,245 +1850,6 @@ The var keyword lets the compiler automatically detect the type of a variable ba
 
 This helps you write cleaner code and avoid repeating types, especially for long or complex types.
 
-## Java Arrays Refresher
-
-Arrays store a fixed number of values of the same type. In Java, an array is an object: its length is fixed when it is created, its elements receive default values, and its indexes start at `0`.
-
-### One-dimensional arrays
-
-```java
-int[] arr = new int[5];              // Five ints, each initially 0
-int[] a = {1, 2, 3, 4, 5};           // Declare and initialize
-int[] b = new int[]{1, 2, 3};        // Explicit array creation
-int arr2[] = new int[5];             // Valid, but int[] arr2 is preferred
-```
-
-The array length is available through the `length` field:
-
-```java
-System.out.println(a.length);        // 5
-System.out.println(a[0]);            // 1 (first element)
-```
-
-### Array indexing and traversal
-
-Java arrays use **zero-based indexing**: the first element is at index `0`, and the last element is at index `length - 1`. For an array of length `5`, valid indexes are `0` through `4`. An index outside that range throws `ArrayIndexOutOfBoundsException`.
-
-```java
-int[] scores = {84, 91, 76};
-
-System.out.println(scores[0]);       // 84: first element
-System.out.println(scores[2]);       // 76: last element
-System.out.println(scores[scores.length - 1]); // Last element without hard-coding its index
-
-for (int i = 0; i < scores.length; i++) {
-    System.out.println("index " + i + " contains " + scores[i]);
-}
-
-for (int score : scores) {
-    System.out.println(score);       // Use when the index itself is not needed
-}
-```
-
-Use `i < array.length`, not `i <= array.length`, in an index-based loop: `array[array.length]` is already one position past the end. An empty array has length `0` and has no valid indexes.
-
-For a two-dimensional array, each index selects an array (row) first, then an element within that row. Both indexes are zero-based, and each row has its own length:
-
-```java
-int[][] grid = {
-    {10, 20, 30},
-    {40, 50, 60}
-};
-
-System.out.println(grid[0][0]);      // 10: first row, first column
-System.out.println(grid[1][2]);      // 60: second row, third column
-
-for (int row = 0; row < grid.length; row++) {
-    for (int column = 0; column < grid[row].length; column++) {
-        System.out.println(grid[row][column]);
-    }
-}
-```
-
-In a jagged array, use `array[row].length` for the selected row; rows do not necessarily have the same number of columns.
-
-### Arrays of different types and default values
-
-```java
-int[] numbers = new int[5];
-float[] prices = new float[5];
-double[] values = new double[5];
-char[] letters = new char[5];
-boolean[] flags = new boolean[5];
-String[] names = new String[5];
-```
-
-| Element type                      | Default value                   |
-| --------------------------------- | ------------------------------- |
-| `byte`, `short`, `int`, `long`    | `0`                             |
-| `float`                           | `0.0f`                          |
-| `double`                          | `0.0`                           |
-| `char`                            | `'\u0000'` (the null character) |
-| `boolean`                         | `false`                         |
-| Reference types, such as `String` | `null`                          |
-
-### Initializing and updating arrays
-
-```java
-int[] initialized = {10, 20, 30};
-int[] explicit = new int[]{10, 20, 30};
-
-int[] values2 = new int[5];
-values2[0] = 10;
-values2[1] = 20;
-```
-
-An array initializer in braces can be used directly in a declaration, but not by itself in a later assignment:
-
-```java
-int[] values3 = {1, 2, 3};
-// values3 = {4, 5, 6};              // Does not compile
-values3 = new int[]{4, 5, 6};        // Correct reassignment
-
-printArray(new int[]{7, 8, 9});      // Anonymous array passed to a method
-```
-
-### Two-dimensional and jagged arrays
-
-A two-dimensional array is an array of arrays. It is often used for tables and grids:
-
-```java
-int[][] matrix = new int[3][4];      // 3 rows, 4 columns
-matrix[1][2] = 7;                    // Row 1, column 2
-
-int[][] initializedMatrix = {
-    {1, 2, 3},
-    {4, 5, 6}
-};
-
-int[][] explicitMatrix = new int[][]{
-    {1, 2},
-    {3, 4}
-};
-```
-
-Rows can have different lengths; this is called a jagged array:
-
-```java
-int[][] jagged = new int[3][];
-jagged[0] = new int[2];
-jagged[1] = new int[4];
-jagged[2] = new int[3];
-```
-
-### Three-dimensional and higher-dimensional arrays
-
-Java arrays can have more than three dimensions. Each dimension is another level of nested arrays:
-
-```java
-int[][][] threeD = new int[2][3][4];
-int[][][][] fourD = new int[2][3][4][5];
-
-int[][][] initialized3D = {
-    {
-        {1, 2},
-        {3, 4}
-    },
-    {
-        {5, 6},
-        {7, 8}
-    }
-};
-```
-
-### Character arrays and strings
-
-```java
-char[] letters2 = {'h', 'e', 'l', 'l', 'o'};
-char[] emptyLetters = new char[5];
-
-String word = "hello";
-String[] words = {"hello", "world"};
-char firstCharacter = word.charAt(0);
-```
-
-A `String` is an object, not a `char[]`. Use `charAt(index)` to read one of its characters.
-
-### Arrays sized from input
-
-The size can be determined at runtime. It must be non-negative, and the array must fit within the JVM's implementation limits and available memory.
-
-```java
-import java.util.Scanner;
-
-public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        int n = sc.nextInt();
-        int[] numbers2 = new int[n];
-
-        for (int i = 0; i < numbers2.length; i++) {
-            numbers2[i] = sc.nextInt();
-        }
-
-        sc.close();
-    }
-}
-```
-
-The same applies to multidimensional arrays:
-
-```java
-int rows = 3;
-int columns = 4;
-int[][] runtimeMatrix = new int[rows][columns];
-
-int x = 2, y = 3, z = 4;
-int[][][] runtime3D = new int[x][y][z];
-```
-
-### When the size needs to change: `ArrayList`
-
-An array cannot grow or shrink after creation. Use `ArrayList` when the number of elements changes:
-
-```java
-import java.util.ArrayList;
-
-ArrayList<Integer> numbers3 = new ArrayList<>();
-numbers3.add(10);
-numbers3.add(20);
-numbers3.add(30);
-numbers3.remove(1);                   // Removes the element at index 1
-```
-
-`ArrayList<Integer>` stores `Integer` objects (with automatic boxing/unboxing), not primitive `int` values.
-
-### Quick revision
-
-| Need                                                  | Example                                     |
-| ----------------------------------------------------- | ------------------------------------------- |
-| Create a fixed-size array                             | `int[] a = new int[10];`                    |
-| Start with known values                               | `int[] a = {1, 2, 3};`                      |
-| Create an array for reassignment or a method argument | `new int[]{1, 2, 3}`                        |
-| Store a grid or matrix                                | `int[][] a = new int[3][4];`                |
-| Give rows different lengths                           | `int[][] a = new int[3][];`                 |
-| Store higher-dimensional data                         | `int[][][] a = new int[2][3][4];`           |
-| Set the size using input                              | `int[] a = new int[n];`                     |
-| Add and remove elements dynamically                   | `ArrayList<Integer> a = new ArrayList<>();` |
-
-For DSA practice, get comfortable with `int[]`, `int[][]`, `int[][][]`, and `ArrayList`. Remember: array sizes can be chosen at runtime, but an array's length cannot change after it is created.
-
-## Type Casting
-
-In Java, there are two main types of casting:
-
-`Widening Casting `(automatic) - converting a smaller type to a larger type size
-byte -> short -> char -> int -> long -> float -> double
-
-`Narrowing Casting` (manual) - converting a larger type to a smaller type size
-double -> float -> long -> int -> char -> short -> byte
-
 ## Operators
 
 A String in Java is actually an `object`, which means it contains `methods` that can perform certain operations on strings.
@@ -1476,32 +2081,15 @@ The common numeric widening sequence is `byte -> short -> int -> long -> float -
 
 The exact reserved-word list depends on the Java language version. Keywords are reserved by the language; contextual keywords have special meaning only in certain contexts.
 
-### Control flow and program entry point
-
-- **Branching:** `if` / `else`, `switch` (including newer switch expressions in supported Java versions)
-- **Loops:** `for`, enhanced `for` (for-each), `while`, `do` / `while`
-- **Loop control:** `break`, `continue`, and `return`
-
-The conventional launch method is `public static void main(String[] args)` (the parameter may also be written as `String... args`). The JVM launcher calls the recognized entry-point form; overloading `main` is allowed, but other overloads are not automatically selected as the entry point. A static method is hidden rather than overridden, so a subclass cannot override `main` in the polymorphic instance-method sense.
-
-```java
-public class Hello {
-    public static void main(String[] args) {
-        System.out.print("Hello ");   // Does not append a newline
-        System.out.println("Java");   // Appends a newline
-    }
-}
-```
-
-`public` makes the method accessible to the launcher, `static` lets it be called without constructing the class, and `void` means it returns no value. The argument array contains command-line arguments. A static initializer is not a substitute for a valid launch method on modern Java launchers.
-
-For a public top-level class, the source file name must match the class name (for example, `Hello` in `Hello.java`).
-
 ### Classes, objects, and object creation
 
 A **class** defines the state and behavior its objects can have; an **object** is a runtime instance of a class, with identity, state (fields), and behavior (methods). Common class descriptions include concrete, abstract, final, nested, POJO, and singleton. These are not six mutually exclusive language-level class types: for example, a class can be both final and a POJO.
 
-All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`. `compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`. `finalize()` is deprecated for removal and should not be used for resource cleanup.
+All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`. 
+
+`compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`. 
+
+`finalize()` is deprecated for removal and should not be used for resource cleanup.
 
 Common ways to obtain or create an object include:
 
@@ -1517,7 +2105,7 @@ A factory method is a design approach that controls object creation, not a separ
 
 The `transient` modifier excludes an instance field from default Java serialization. After deserialization, such a field has its default value unless restored separately. Static fields are class state rather than per-object serialized state, and `final` fields have additional serialization constraints; applying `transient` to these does not make them useful serialized state.
 
-A singleton is a design pattern intended to provide one shared instance within a defined scope. A private constructor plus a static accessor is one approach, but thread safety, serialization, class loaders, and testing also matter. An enum singleton is a robust option in many cases. `getInstance()` is a convention, not a required Java mechanism.
+A `singleton` is a design pattern intended to provide one shared instance within a defined scope. A private constructor plus a static accessor is one approach, but thread safety, serialization, class loaders, and testing also matter. An enum singleton is a robust option in many cases. `getInstance()` is a convention, not a required Java mechanism.
 
 An inner class is a non-static nested class and has an enclosing instance. A static nested class does not have an implicit enclosing instance:
 
@@ -1651,7 +2239,7 @@ An exception represents an abnormal condition that interrupts normal control flo
 
 `finally` normally runs whether or not an exception was caught, but it is not guaranteed during abrupt JVM/process termination or a system failure. Prefer try-with-resources for closing files and other resources. `finalize()` is deprecated for removal and is not a reliable cleanup mechanism; use `AutoCloseable`, try-with-resources, or carefully designed cleaners instead.
 
-The JVM manages memory automatically. The **heap** primarily holds objects and arrays; **thread stacks** hold method frames, local variables, and intermediate computation state. JVM memory also includes areas such as class metadata and per-thread program counters and native stacks. Exact layout is JVM-implementation-specific. References may point to heap objects; Java does not expose general pointer arithmetic.
+The JVM manages memory automatically. The **heap** primarily holds objects and arrays; **thread stacks** hold method frames, local execution state, and references as part of the conceptual model. Exact physical placement is JVM-implementation-specific: Java does not guarantee that a reference is a literal memory address or that every local variable is physically stored on a thread stack. Java also does not expose general pointer arithmetic.
 
 A **deadlock** can occur when threads wait forever for locks held by each other. For example, thread A holds lock 1 while waiting for lock 2, and thread B holds lock 2 while waiting for lock 1. Consistent lock ordering and minimizing nested locks help reduce the risk.
 

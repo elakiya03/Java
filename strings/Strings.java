@@ -1,3 +1,5 @@
+package strings;
+
 public class Strings {
 
     public static void main(String args[]) {
@@ -13,16 +15,16 @@ public class Strings {
         // 3. Uppercase
         System.out.println(s.toUpperCase());
 
-        // indexOf char - position of first occurence
+        // 4. indexOf char - position of first occurence
         System.out.println(s.indexOf('y'));
 
-        // charAt - to access a character at a specific position
+        // 5. charAt - to access a character at a specific position
         System.out.println(s.charAt(3));
 
-        //
+        // 6. Comparing strings
         System.out.println(s.equals("elakiya"));
 
-        // cancatenation
+        // 7. Concatenation
         System.out.println(s.concat(s));
         System.out.println("Cancatenation" + " Using plus(+) operator");
     }
