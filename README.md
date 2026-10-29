@@ -67,12 +67,12 @@ java -version
 javac -version
 ```
 
-For a single source file, save a public class as `Hello.java`, then compile and run it:
+### How to Run the Program
 
-```text
-javac Hello.java
-java Hello
-```
+1. Make sure you have Java installed on your system.
+2. Open a terminal and navigate to the directory containing `Hello.java`.
+3. Compile the program: `javac Hello.java`
+4. Run the program: `java Hello`
 
 Java also supports source-file launch mode for simple experiments (`java Hello.java` on modern JDKs). For real projects, use a build tool such as Maven or Gradle and configure the language release explicitly so local and CI builds agree.
 
@@ -99,6 +99,33 @@ The JDK includes development tools and runtime components. The JVM is the virtua
 - Compilation catches syntax and type errors; runtime behavior can still fail.
 - Bytecode is not the same thing as native machine code.
 - A JVM implementation is platform-specific even though Java bytecode is portable.
+
+---
+
+## Naming Conventions
+
+- The class name should always start with an uppercase first letter. This is a standard Java convention known as PascalCase.
+- In our example, the class is named `Hello`, which starts with an uppercase 'H'.
+- Note: Java is case-sensitive. `MyClass` and `myclass` would be treated as two completely different names.
+
+### File Naming Requirements
+
+The name of the Java file must match the class name exactly. So if your class is called `Hello`, the file must be saved as `Hello.java`. This is because Java uses the class name to find and run your code. If the names don't match, Java will give a compilation error and the program will not run.
+
+Identifiers name classes, methods, variables, packages, and other declarations. By convention, use `UpperCamelCase` for classes and records, `lowerCamelCase` for methods and variables, and `UPPER_SNAKE_CASE` for constants. Names cannot be Java keywords, cannot contain spaces, and must follow identifier rules.
+
+A **package** is Java's namespace mechanism: it groups types, helps prevent naming collisions, and participates in access control. It is not the same construct as a C++ namespace. The package declaration, when present, is the first non-comment statement in a source file. Conventionally, package names are lowercase and correspond to directory paths:
+
+```java
+package com.example.inventory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class StockService {
+    private final List<String> itemCodes = new ArrayList<>();
+}
+```
 
 ---
 
@@ -265,6 +292,21 @@ Serialization writes an object graph to a binary stream. Deserialization can fai
 
 The conventional launch method is `public static void main(String[] args)` (the parameter may also be written as `String... args`). The JVM launcher calls the recognized entry-point form; overloading `main` is allowed, but other overloads are not automatically selected as the entry point. A static method is hidden rather than overridden, so a subclass cannot override `main` in the polymorphic instance-method sense.
 
+**The main Method**
+
+The `main` method is the entry point of any Java application. It is where the program starts executing. The signature `public static void main(String args[])` is standard and required for standalone Java programs. When you run a Java program, the Java Virtual Machine (JVM) looks for the `main` method to begin executing the code. Without a `main` method, the JVM wouldn't know where to start.
+
+**System.out.println() Explanation**
+
+`System.out.println()` is used to print text to the console (screen). While it may look long, you can think of it as a single command that means: "Send this text to the screen."
+
+Here's what each part means (you will learn the details later):
+
+- `System` is a built-in Java class that provides access to system resources.
+- `out` is a member of the `System` class, short for "output". It represents the standard output stream.
+- `println()` is a method, short for "print line". It prints the specified text followed by a newline character.
+- `print()` is a method, short for "print line". It prints the specified text. The only difference is that it does not insert a new line at the end of the output.
+
 ```java
 public class Hello {
     public static void main(String[] args) {
@@ -274,30 +316,51 @@ public class Hello {
 }
 ```
 
+#### Command-line argument parameter
+
+The conventional declaration uses `String[] args`, but Java permits several equivalent parameter spellings for the launch method. The parameter name is an ordinary identifier, not a keyword, so you can choose a descriptive name:
+
+```java
+public static void main(String[] args) { }
+public static void main(String args[]) { }
+public static void main(String... args) { }
+public static void main(String[] myInputs) { }
+public static void main(String... parameters) { }
+```
+
+The brackets-after-name form is valid Java, though `String[] args` is the usual style. Varargs (`String...`) is treated as a `String[]` parameter, so these spellings describe the same parameter type and cannot be used to overload `main` against one another. Keep the `public static void main` entry-point shape; other `main` overloads are not selected as the application's entry point.
+
 `public` makes the method accessible to the launcher, `static` lets it be called without constructing the class, and `void` means it returns no value. The argument array contains command-line arguments. A static initializer is not a substitute for a valid launch method on modern Java launchers.
 
 For a public top-level class, the source file name must match the class name (for example, `Hello` in `Hello.java`).
 
 Java is `case-sensitive`. Statements commonly end with `;`, and braces `{}` delimit classes, methods, and control-flow blocks. Whitespace and indentation improve readability but do not determine block structure.
 
-### Naming convention
+`import` lets source code use a type's simple name rather than its fully qualified name. Imports do not copy code, do not import subpackages recursively, and do not make inaccessible types accessible. `java.lang` is implicitly imported.
 
-Identifiers name classes, methods, variables, packages, and other declarations. By convention, use `UpperCamelCase` for classes and records, `lowerCamelCase` for methods and variables, and `UPPER_SNAKE_CASE` for constants. Names cannot be Java keywords, cannot contain spaces, and must follow identifier rules.
+#### Packages and APIs
 
-A **package** is Java's namespace mechanism: it groups types, helps prevent naming collisions, and participates in access control. It is not the same construct as a C++ namespace. The package declaration, when present, is the first non-comment statement in a source file. Conventionally, package names are lowercase and correspond to directory paths:
+A **package** is a namespace that groups related types, helps avoid naming conflicts, and participates in access control. It is not literally a folder, although standard Java project layouts place source files in directories that match their package names. A package declaration must be the first non-comment declaration in a source file.
+
+Common Java platform packages include:
+
+- `java.lang`: fundamental types and utilities such as `String`, `Math`, and `System`; this package is implicitly imported.
+- `java.util`: collections and utilities such as `ArrayList`, `HashMap`, and `Scanner`.
+- `java.io` and `java.nio`: input/output, files, and paths.
+- `java.net`: networking types such as URIs, URLs, and sockets.
+
+An **API** (Application Programming Interface) is the documented set of types and operations that other code is intended to use, including their behavior and constraints. The Java platform API is provided across many packages; a package organizes types, while an API describes how callers use them. Third-party libraries and your own classes can also expose APIs.
+
+For example, `List` and `ArrayList` are in `java.util`, while methods such as `add` and `size` are part of the collection API:
 
 ```java
-package com.example.inventory;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockService {
-    private final List<String> itemCodes = new ArrayList<>();
-}
+List<String> names = new ArrayList<>();
+names.add("Ava");
+System.out.println(names.size()); // 1
 ```
-
-`import` lets source code use a type's simple name rather than its fully qualified name. Imports do not copy code, do not import subpackages recursively, and do not make inaccessible types accessible. `java.lang` is implicitly imported.
 
 **Remember when coding**
 
@@ -309,14 +372,14 @@ public class StockService {
 
 ## Data types
 
-A variable is a named reference or value with a type. The type determines the operations that are valid. Java is statically typed: the compiler checks types before the program runs.
+The main differences between `primitive` and `non-primitive` data types are:
 
-```java
-int attempts = 3;               // primitive value
-String userName = "Elakiya";    // reference to a String object
-final int maxAttempts = 5;      // cannot be reassigned
-var message = "Ready";          // inferred local type: String
-```
+- Primitive types in Java are `predefined` and built into the language, while non-primitive types are created by the programmer (except for String).
+- Non-primitive types can be used to call methods to perform certain operations, whereas primitive types cannot.
+- Primitive types start with a lowercase letter (like int), while non-primitive types typically starts with an uppercase letter (like String).
+- Primitive types always hold a value, whereas non-primitive types can be null.
+
+### Primitive Data types
 
 Java's eight **primitive types** are `byte`, `short`, `int`, `long`, `float`, `double`, `char`, and `boolean`. All other types—including arrays, strings, enums, and records—are reference types. A reference can be `null`; primitives cannot.
 
@@ -339,12 +402,22 @@ Default field and array values include `0` for integer types, `0.0` for `double`
 
 `final` means a variable can be assigned only once. For a reference, `final` prevents assigning a different reference; it does not make the referenced object immutable. `var` (Java 10+) asks the compiler to infer a local variable's static type from its initializer; it is not dynamic typing and cannot be used for fields, method parameters, or uninitialized locals.
 
-**Remember when coding**
+### Non-Primitive Data types
 
-- Choose types based on range and meaning, not only habit.
-- Avoid comparing floating-point results for exact equality when rounding may matter.
-- Validate nullable references before dereferencing; consider clear invariants and `Objects.requireNonNull`.
-- Use descriptive names and the narrowest sensible scope.
+**Non-primitive** data types - such as `String`, `Arrays` and `Classes`. Non-primitive data types are called reference types because they refer to objects.
+
+### The var Keyword
+
+The var keyword was introduced in Java 10 (released in 2018). The var keyword lets the compiler automatically detect the type of a variable based on the value you assign to it. This helps you write cleaner code and avoid repeating types, especially for long or complex types.
+
+A variable is a named reference or value with a type. The type determines the operations that are valid. Java is statically typed: the compiler checks types before the program runs.
+
+```java
+int attempts = 3;               // primitive value
+String userName = "Elakiya";    // reference to a String object
+final int maxAttempts = 5;      // cannot be reassigned
+var message = "Ready";          // inferred local type: String
+```
 
 ---
 
@@ -1097,6 +1170,12 @@ For DSA practice, get comfortable with `int[]`, `int[][]`, `int[][][]`, and `Arr
 
 `String` is an immutable reference type. Operations that appear to modify a string return a new string. Use `equals` for content equality and `charAt(index)` for a UTF-16 code unit; Unicode code points may span more than one `char`. Use `StringBuilder` when assembling many pieces in a loop.
 
+A String in Java is actually an `object`, which means it contains `methods` that can perform certain operations on strings.
+
+- Strings are used for storing texts.
+- String literals in Java require double quotes.
+- Single quotes are reserved for single character values.
+
 ```java
 String first = "Java";
 String second = first + " SE";           // first remains "Java"
@@ -1116,9 +1195,55 @@ For declarations, default values, multidimensional arrays, and more indexing exa
 
 ---
 
-## Classes
+## Oops
+
+### Classes and objects
 
 A `class` defines a type: its fields represent state, constructors establish valid initial state, and methods represent behavior. An `object` is an instance of a class created at runtime. A reference variable refers to an object; it is not the object itself.
+
+#### Class Structure
+
+`Every line of code that runs in Java must be inside a class.` A class is a blueprint for creating objects and contains the code that defines the behavior of the program.
+
+In our example, we have defined a class named `Hello`:
+
+```java
+public class Hello {
+    public static void main(String args[]){
+        System.out.println("Elakiya you can be a coder one day");
+    }
+}
+```
+
+### Concrete, abstract, and final classes
+
+A **concrete class** is a class that can be instantiated. It must provide implementations for inherited abstract methods. A **non-abstract class** may still declare ordinary methods that subclasses can override.
+
+An **abstract class** is declared with `abstract` and cannot be instantiated directly. It can contain both implemented and abstract methods; a concrete subclass must implement its inherited abstract methods. Abstract classes are useful when related subclasses share state or implementation. See [abstract classes and interfaces](#abstract-classes-interfaces-and-composition) for more detail.
+
+```java
+abstract class Vehicle {
+    abstract void startEngine();
+
+    void stop() {
+        System.out.println("Stopped");
+    }
+}
+
+class Car extends Vehicle {
+    @Override
+    void startEngine() {
+        System.out.println("Engine started");
+    }
+}
+```
+
+A **final class** cannot be extended. For example, `String` is final. `final` prevents subclassing; it does not by itself make every object immutable.
+
+```java
+final class SecureLock {}
+// class ChildLock extends SecureLock {} // Does not compile
+```
 
 ```java
 class BankAccount {
@@ -1139,50 +1264,491 @@ class BankAccount {
 }
 ```
 
-`new` allocates an object and invokes a constructor. A constructor has the class name, no return type, and initializes an object. If you declare no constructor, Java supplies a no-argument default constructor; after declaring any constructor, you must declare any no-argument constructor you still need. Constructors can be overloaded and chained with `this(...)` or `super(...)`.
+**POJO** (Plain Old Java Object) is an informal term, not a special Java language construct. It generally describes an ordinary Java object that is not required to extend a framework-specific base class or implement a framework-specific interface.
+
+Class descriptions can overlap: a class may be concrete, final, and a POJO at the same time; a nested class may also be abstract or final. Records are a distinct Java class form for data carriers and are covered under [enums, records, and sealed types](#enums-records-and-sealed-types).
+
+### Java supports nested Class types:
+
+- A **static nested class** is declared inside another class with `static`. It has no implicit enclosing-instance reference and cannot directly access the outer class's instance members.
+- A non-static **inner class** is a member class associated with an enclosing instance. It can access that instance's members, including private members.
+- A **local class** is declared within a block, such as a method, and is in scope only within that block.
+- An **anonymous class** is an unnamed class expression that declares and creates an instance, commonly to implement an interface or extend a class for one-off behavior. A lambda is often simpler for a functional interface.
+
+```java
+class Outer {
+    private int value = 10;
+
+    static class Nested {
+        void show() {
+            System.out.println("No enclosing Outer instance required");
+        }
+    }
+
+    class Inner {
+        void show() {
+            System.out.println(value); // Uses the enclosing Outer instance
+        }
+    }
+
+    void createLocalClass() {
+        class LocalHelper {
+            void show() {
+                System.out.println(value);
+            }
+        }
+        new LocalHelper().show();
+    }
+}
+
+Outer.Nested nested = new Outer.Nested();
+Outer outer = new Outer();
+Outer.Inner inner = outer.new Inner();
+```
+
+### Constructors
+
+A `constructor` in Java is a special method that is used to initialize objects. `new` creates an object and invokes a constructor to initialize it. A constructor has the same name as its class and no return type—not even `void`. It is not responsible for allocating the object's memory.
+
+#### Types of Constructors
+
+The three commonly taught constructor types are the compiler-provided default constructor, an explicitly written no-argument constructor, and a parameterized constructor. The important distinction is whether the constructor is supplied by the compiler or written by you, and whether it accepts parameters.
+
+**1. Default constructor:** If a class declares no constructors, the compiler supplies a no-argument constructor. This is called the _default constructor_:
+
+```java
+class Scoreboard {
+    private int score;
+}
+
+Scoreboard board = new Scoreboard();
+```
+
+The compiler-supplied constructor takes no arguments and calls the superclass's no-argument constructor. The `score` field starts at `0`, its default value. If you declare any constructor yourself, the compiler no longer supplies this default constructor.
+
+**2. No-argument constructor:** This constructor has no parameters. You can write one explicitly when you want to choose initial values or perform setup:
+
+```java
+class Scoreboard {
+    private int score;
+
+    Scoreboard() {
+        score = 100;
+    }
+}
+```
+
+Because this class declares a constructor, Java does not also add a default constructor. The explicit `Scoreboard()` is a no-argument constructor, but it is not the compiler-provided default constructor.
+
+**3. Parameterized constructor:** This constructor accepts values so each new object can begin with caller-provided data:
+
+```java
+class Scoreboard {
+    private final int score;
+
+    Scoreboard(int score) {
+        this.score = score;
+    }
+}
+
+Scoreboard board = new Scoreboard(100);
+```
+
+#### Constructor overloading and constructor chaining
+
+**Constructor overloading** means defining multiple constructors in one class with different parameter lists. The lists may differ by the `number of parameters`, `their types`, or the `order of different types`. Changing only access modifiers does not create an overload; two constructors with the same parameter types are duplicates and will not compile. Java selects the applicable constructor at compile time from the arguments in the `new` expression and their types.
+
+**Constructor chaining** uses `this(...)` to call another constructor in the same class. In this example, the no-argument and name-only constructors delegate to the three-argument constructor, so the field assignments are written only once:
+
+```java
+class CricketPlayer {
+    private final String name;
+    private final int score;
+    private final String team;
+
+    CricketPlayer(String name, int score, String team) {
+        this.name = name;
+        this.score = score;
+        this.team = team;
+    }
+
+    CricketPlayer() {
+        this("Virat", 0, "India");
+    }
+
+    CricketPlayer(String name) {
+        this(name, 0, "India");
+    }
+
+    void display() {
+        System.out.println("Player: " + name + " | Score: " + score + " | Team: " + team);
+    }
+}
+
+public class ConstructorDemo {
+    public static void main(String[] args) {
+        CricketPlayer defaultPlayer = new CricketPlayer();
+        CricketPlayer namedPlayer = new CricketPlayer("Rohit");
+        CricketPlayer customPlayer = new CricketPlayer("Rahul", 45, "LSG");
+
+        defaultPlayer.display(); // Player: Virat | Score: 0 | Team: India
+        namedPlayer.display();   // Player: Rohit | Score: 0 | Team: India
+        customPlayer.display();  // Player: Rahul | Score: 45 | Team: LSG
+    }
+}
+```
+
+The three parameter lists are `()`, `(String)`, and `(String, int, String)`, so these constructors are overloads. `CricketPlayer()` is explicitly written; it is not a compiler-provided default constructor. In Java 21, the guide's baseline, a `this(...)` or `super(...)` call must be the first statement in a constructor. If neither call is written, Java inserts `super()` when the superclass has an accessible no-argument constructor. Constructors can be chained during object creation, but cannot be called on an object that already exists.
+
+Field initializers and instance initializer blocks run as part of object initialization. The superclass is initialized first; then each class's field initializers and instance initializer blocks run in source order before that class's constructor body. Static field initializers and static initializer blocks run as part of class initialization, generally once per class loader. For ordinary initialization, field initializers and constructors are usually clearer; use a static initializer when class-level setup needs multiple statements.
+
+### Object lifecycle and resource cleanup
+
+Java has `no destructor` syntax and does not let application code explicitly free an object's memory. The garbage collector may reclaim an object when it is no longer reachable, but when collection occurs is unspecified, and the JVM is not required to return reclaimed memory immediately to the operating system. Setting a reference to `null` does not destroy an object; other references may still exist.
+
+Garbage collection manages memory, not external resources such as files, sockets, and database connections. For resources that need deterministic cleanup, use `AutoCloseable` with try-with-resources:
+
+```java
+class NetworkConnection implements AutoCloseable {
+    void transmitData() {
+        System.out.println("Sending data...");
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Connection closed.");
+    }
+}
+
+public class ResourceDemo {
+    public static void main(String[] args) {
+        try (NetworkConnection connection = new NetworkConnection()) {
+            connection.transmitData();
+        } // close() runs automatically when the block exits
+    }
+}
+```
+
+Try-with-resources calls `close()` when control leaves the block, including when an exception occurs. It is the standard approach for resource cleanup, not a destructor: it does not destroy the object or directly control memory reclamation.
+
+Do not use `finalize()` for cleanup. Finalization was deprecated for removal in Java 9 and its deprecation was reaffirmed in Java 18; it was not removed in Java 18. Its execution is nondeterministic and it may never run. Prefer try-with-resources for resources you own.
 
 An instance field belongs to each object; a static field belongs to the class. Instance initialization follows superclass initialization, then field/initializer-block order, then constructor body. Static initialization runs when a class is initialized.
 
-`this` refers to the current instance and is commonly used to distinguish a field from a parameter or to chain constructors. `super` refers to superclass behavior and is used to call a superclass constructor or implementation.
+### The `this` keyword
 
-Java supports nested types:
+Inside an instance method or constructor, `this` refers to the current object. It is often used when a parameter has the same name as a field: the parameter name would otherwise refer to the parameter, so `this.fieldName` explicitly selects the field.
 
-- A **static nested class** has no implicit reference to an enclosing object.
-- A non-static **inner class** is associated with an enclosing instance and can access its members.
-- A **local class** is declared inside a method or block.
-- An **anonymous class** declares and instantiates a one-off implementation, often replaced by a lambda when implementing a functional interface.
+```java
+class Player {
+    private String name;
 
-Static initializer blocks and instance initializer blocks are also available, but field initializers and constructors are usually clearer for ordinary initialization. Use a static initializer only when class-level initialization genuinely needs multiple statements.
+    Player(String name) {
+        this.name = name;
+    }
 
-**Remember when coding**
+    void setName(String name) {
+        this.name = name;
+    }
 
-- Make constructors establish valid objects; do not leave required fields in an invalid state.
-- Prefer immutable fields (`final`) when a value should not change after construction.
-- Do not put per-object state in static fields.
-- Keep object creation and business behavior easy to test separately when practical.
+    void display() {
+        System.out.println(this.name);
+    }
+}
+```
 
-### Encapsulation and access control
+In `this.name = name`, `this.name` is the current object's field and `name` is the parameter. If there is no name conflict, writing `this` is optional when accessing an instance field or method. `this` cannot be used in a static context because a static method does not run for one particular object.
 
-Encapsulation protects an object's invariants by controlling how its state can be read or changed. A common design uses private fields and a small public API. Getters and setters are tools, not a requirement for every field; a setter that allows invalid state weakens encapsulation.
+In a constructor, `this(...)` calls another constructor in the same class. It must be the first statement in that constructor for this guide's Java 21 baseline; see [constructor chaining](#constructor-overloading-and-constructor-chaining). By contrast, `super(...)` calls a constructor in the superclass, and `super.methodName()` invokes a superclass implementation. `super` is not another spelling of `this`.
 
-| Modifier                      | Access                                                                    |
-| ----------------------------- | ------------------------------------------------------------------------- |
-| `private`                     | Within the declaring class                                                |
-| No modifier (package-private) | Within the same package                                                   |
-| `protected`                   | Within the same package and, under subclass access rules, from subclasses |
-| `public`                      | Wherever the declaring type and module make it accessible                 |
+### Access and non-access modifiers
+
+| Access level                  | Visibility                                                                                    |
+| ----------------------------- | --------------------------------------------------------------------------------------------- |
+| `private`                     | Within the declaring top-level class (including its nested members under Java's access rules) |
+| No modifier (package-private) | Within the same package                                                                       |
+| `protected`                   | Same package, and subclasses in other packages under protected-access rules                   |
+| `public`                      | Wherever the declaring type/member is accessible                                              |
 
 Top-level classes can generally be `public` or package-private. `private` and `protected` are available to members and nested types, not ordinary top-level classes.
 
-**Remember when coding**
+Access modifiers determine who can use a declaration. **Non-access modifiers** add other rules or behavior. They are valid only on particular kinds of declarations and cannot be combined arbitrarily.
 
-- Start with the least visibility that meets the requirement.
-- Keep fields private and validate changes at the boundary.
-- Avoid exposing mutable internal collections or arrays directly; return defensive copies or unmodifiable views when needed.
+#### `final`
 
-### Inheritance, overriding, and polymorphism
+`final` means `a variable can be assigned only once, a method cannot be overridden, or a class cannot be subclassed`, depending on where it is used. A final field may be assigned where it is declared or in a constructor. A final reference cannot point to a different object after assignment, but the object it refers to may still be mutable.
+
+```java
+class Limits {
+    static final double PI = 3.14159;
+    private final int maximum;
+
+    Limits(int maximum) {
+        this.maximum = maximum;
+    }
+}
+```
+
+After construction, `maximum` cannot be reassigned. `static final` is commonly used for constants. A `final` class cannot be extended, and a `final` instance method cannot be overridden.
+
+#### `static`
+
+`static` makes a field or method belong to the class rather than to each individual object. A static field is shared by instances of that class; a static method can be called with the class name without creating an object. Since a static method has no current instance, it cannot use `this` or directly access instance fields and methods.
+
+```java
+class Counter {
+    private static int total;
+
+    Counter() {
+        total++;
+    }
+
+    static int totalCreated() {
+        return total;
+    }
+}
+
+Counter first = new Counter();
+Counter second = new Counter();
+System.out.println(Counter.totalCreated()); // 2
+```
+
+Only a nested class can be declared `static`; a top-level class cannot.
+
+#### `abstract`
+
+An `abstract` class cannot be instantiated directly. It may contain implemented methods, fields, and constructors, as well as abstract methods with no body. A concrete subclass must implement its inherited all abstract methods.
+
+```java
+abstract class Course {
+    abstract void study();
+}
+
+class JavaCourse extends Course {
+    @Override
+    void study() {
+        System.out.println("Studying Java");
+    }
+}
+```
+
+Create an instance of `JavaCourse`, not `Course`. See [abstract classes and interfaces](#abstract-classes-interfaces-and-composition) for more detail.
+
+#### Other non-access modifiers
+
+- `synchronized`: a method or block acquires a monitor lock while it runs. An instance synchronized method locks that instance; a static synchronized method locks the class. This coordinates code using the same lock but does not automatically make all class behavior thread-safe.
+- `transient`: marks an instance field to be skipped by default Java object serialization. It does not apply to methods.
+- `volatile`: applies to a field and provides visibility and ordering guarantees between threads. It does not make compound operations such as `count++` atomic.
+- `native`: marks a method whose implementation is provided outside Java, typically through the Java Native Interface.
+
+---
+
+## 4 pillars of oops
+
+Object-oriented programming is often explained through four related ideas:encapsulation, abstraction, inheritance, and polymorphism.
+
+1. **Abstraction:** Hide complexity, show essentials
+2. **Encapsulation:** Bundle data and methods, control access
+3. **Inheritance:** Derive new classes from existing ones
+4. **Polymorphism:** Objects behave differently based on context
+
+### Encapsulation
+
+Encapsulation groups an object's data and the behavior that works with that data in one class, while controlling how code outside the class can access or change its state. This lets the object protect its own rules, called **invariants**. For example, a player's score should not become negative.
+
+Encapsulation helps keep state valid, lets the implementation change behind a stable public API, and allows a class to expose only the operations callers need. A class can offer read-only access by providing a getter without a setter; a setter is not required for every field. `Getters and setters` are useful tools, but encapsulation is about controlling access and preserving invariants, not mechanically generating one of each for every field.
+
+A common approach is to:
+
+1. Make fields `private` so other classes cannot change them directly.
+2. Provide public methods only for the access and changes that make sense.
+3. Validate updates in those methods and reject invalid values without changing the object's state.
+
+```java
+public class EncapsulationDemo {
+    static class CricketPlayer {
+        private final String name;
+        private int score;
+
+        CricketPlayer(String name, int initialScore) {
+            this.name = java.util.Objects.requireNonNull(name);
+            setScore(initialScore);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            if (score < 0) {
+                throw new IllegalArgumentException("Score cannot be negative");
+            }
+            this.score = score;
+        }
+    }
+
+    public static void main(String[] args) {
+        CricketPlayer player = new CricketPlayer("Virat", 0);
+        player.setScore(85);
+        System.out.println(player.getName() + " current score: " + player.getScore());
+
+        try {
+            player.setScore(-50);
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        System.out.println("Score remains: " + player.getScore()); // 85
+    }
+}
+```
+
+The fields cannot be changed directly from outside `CricketPlayer`. The setter rejects a negative score by throwing an exception, leaving the previous score unchanged. The constructor uses the same validation, so an invalid initial score cannot create an invalid player.
+
+This example shows the four member access levels in a class declared in the `sports` package:
+
+```java
+package sports;
+
+public class Player {
+    private int accountPin = 4321;
+    int jerseyNumber = 18; // Package-private: no access modifier
+    protected String teamName = "Team India";
+    public String playerName = "Virat";
+
+    public void verifyAccess(int inputPin) {
+        if (accountPin == inputPin) {
+            System.out.println("Access granted to " + playerName);
+        } else {
+            System.out.println("Access denied.");
+        }
+    }
+}
+```
+
+`accountPin` can be accessed directly only inside `Player`; callers can request a check through the public method without reading the field. `jerseyNumber` is accessible to other classes in the same Java package. `teamName` is accessible in the same package and to subclasses in other packages, subject to Java's protected-access rules. `playerName` and `verifyAccess` are public, subject to the class and module being accessible.
+
+This is a teaching example, not a production credential design: do not hard-code real PINs or secrets, and consider making state private and exposing only methods that preserve the class's invariants.
+
+### Abstraction
+
+Abstraction exposes the important behavior of a type while hiding implementation details. Java primarily uses **abstract classes** and **interfaces** to express abstractions, but they solve different design problems.
+
+| Feature              | Abstract class                                                                                                     | Interface                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| State                | Can have instance fields, including mutable state, and static fields.                                              | Fields are implicitly `public static final` constants; there is no per-instance state.       |
+| Methods with bodies  | Can declare ordinary concrete methods.                                                                             | Can declare `default` and `static` methods (Java 8+), and private helper methods (Java 9+).  |
+| Abstract methods     | Can declare abstract methods with the `abstract` keyword, as well as concrete methods.                             | Ordinary instance methods are implicitly `public abstract`; no `abstract` keyword is needed. |
+| Constructors         | Can declare constructors to initialize the class's state.                                                          | Cannot declare constructors.                                                                 |
+| Inheritance          | A class can extend only one class, abstract or concrete; an abstract class can also implement multiple interfaces. | A class can implement multiple interfaces; an interface can extend multiple interfaces.      |
+| Direct instantiation | Cannot be instantiated directly; a concrete subclass can be created.                                               | Cannot be instantiated directly; create an implementing class.                               |
+| Typical purpose      | Share state or implementation among closely related classes.                                                       | Define a capability or contract that different classes can provide.                          |
+
+An abstract class may have no abstract methods and still cannot be instantiated directly. A concrete subclass must implement inherited abstract methods unless it is itself abstract or inherits an implementation. When a subclass is constructed, its superclass constructor runs through `super(...)` (explicitly or implicitly), initializing the superclass portion of the object.
+
+An interface's abstract methods are public, so their implementations in a class must be `public`. A class does not need to implement an inherited `default` method unless it wants to replace it. Interfaces can extend other interfaces with `extends`, including multiple interfaces; they do not use `implements` and cannot extend classes.
+
+This example combines the two: `Animal` provides shared state and implementation, while `Companion` combines two interfaces. `Pet` also provides a `default` method:
+
+```java
+abstract class Animal {
+    private final String name;
+
+    Animal(String name) {
+        this.name = name;
+    }
+
+    String name() {
+        return name;
+    }
+
+    abstract void makeSound();
+
+    void sleep() {
+        System.out.println(name + " is sleeping");
+    }
+}
+
+interface Pet {
+    void play();
+
+    default void rest() {
+        System.out.println("Resting");
+    }
+}
+
+interface Trainable {
+    void train();
+}
+
+interface Companion extends Pet, Trainable {}
+
+class Dog extends Animal implements Companion {
+    Dog(String name) {
+        super(name);
+    }
+
+    @Override
+    void makeSound() {
+        System.out.println("Woof");
+    }
+
+    @Override
+    public void play() {
+        System.out.println(name() + " is playing");
+    }
+
+    @Override
+    public void train() {
+        System.out.println(name() + " is training");
+    }
+}
+
+Dog dog = new Dog("Rex");
+Animal animal = dog;
+animal.makeSound();
+animal.sleep();
+
+Companion companion = dog;
+companion.play();
+companion.train();
+companion.rest();
+```
+
+Choose an abstract class when related implementations need shared state or base behavior. Choose an interface when you want to describe a capability that unrelated classes can share. Composition is another option: one object can use another object to do its work, without inheriting from it.
+
+### Inheritance
 
 Inheritance expresses an **is-a** relationship. A Java class extends at most one class, but it can implement multiple interfaces. A subclass inherits eligible members and may add behavior or override inherited instance methods.
+
+• The "IS-A" Relationship: Inheritance represents a real-world taxonomy. For example, a Car IS-A Vehicle, a Dog IS-A Animal, and a CricketPlayer IS-A Player.
+• The extends Keyword: Java uses the keyword extends to establish an inheritance bridge between a child and a parent.
+• The Single-Inheritance Rule: In Java, a class can only extend exactly ONE parent class directly. Multiple inheritance (e.g., class Child extends Parent1, Parent2) is strictly banned to prevent architectural conflicts like the Diamond Problem.
+
+#### Types of Inheritance
+
+1. **Single Inheritance** - A single child class extends exactly one single parent class. This is the simplest form of inheritance.
+2. **Multilevel Inheritance** -
+3. **Hierarchical Inheritance**
+4. **Multiple Inheritance**
+5. **Hybrid Inheritance**
+
+### Polymorphism
+
+#### Compile Time Polymorphism (Method Overloading)
+
+- Static binding
+  **Overloading**, by contrast, is resolved using compile-time argument types and distinct parameter lists.
+
+#### Run Time Polymorphism (Method Overriding)
+
+- Dynamic binind
+
+Method Overriding occurs when a child class provides a custom implementation for a method that already exists in its parent class.
 
 **Overriding** replaces an inherited instance-method implementation while respecting the method contract. Use `@Override` so the compiler detects signature mistakes. A static method is hidden, not overridden; private methods are not inherited as overridable methods. A final method cannot be overridden, and a final class cannot be subclassed.
 
@@ -1206,52 +1772,21 @@ Animal pet = new Dog();
 System.out.println(pet.speak()); // "bark": runtime dispatch
 ```
 
-The reference's declared type controls which members are available at compile time. For an overridden instance method, the actual object's class selects the implementation at runtime. This is runtime polymorphism. **Overloading**, by contrast, is resolved using compile-time argument types and distinct parameter lists.
+The reference's declared type controls which members are available at compile time. For an overridden instance method, the actual object's class selects the implementation at runtime. This is runtime polymorphism.
 
 Upcasting from subclass to superclass is safe and implicit. Downcasting needs an explicit cast and succeeds only when the object really is an instance of the target type; otherwise it throws `ClassCastException`. Pattern matching with `instanceof` (standard in modern Java) can combine a type check and binding.
 
-**Remember when coding**
+**Notes**
 
 - Model genuine "is-a" relationships; prefer composition for "has-a" relationships.
 - Follow the Liskov substitution principle: a subtype should honor the expectations of its parent type.
 - Use `@Override`, and do not attempt to override static methods.
-- Avoid deep inheritance trees and broad casts when an interface or composition is clearer.
 
-### Abstract classes, interfaces, and composition
+#### Super Keyword
 
-An abstract class cannot be instantiated directly. It can hold state, constructors, concrete methods, and abstract methods. A non-abstract subclass must implement inherited abstract methods.
+---
 
-An interface describes a contract a type can fulfill. Classes can implement multiple interfaces; interfaces can extend multiple interfaces. Interfaces may declare constants, abstract methods, and (since Java 8) default and static methods; private helper methods have been supported since Java 9. Interface fields are implicitly `public static final`. Interfaces have no constructors and no per-instance fields.
-
-Use an abstract class when related implementations need shared state or base behavior. Use an interface to express a capability or role that unrelated types can share. Neither is categorically "fully" or "partially" abstract; choose based on the design.
-
-Composition means one object uses or owns other objects to do its work. It usually keeps behavior easier to replace and test than a rigid inheritance hierarchy.
-
-```java
-interface Notifier {
-    void send(String message);
-}
-
-class AlertService {
-    private final Notifier notifier;
-
-    AlertService(Notifier notifier) {
-        this.notifier = notifier;
-    }
-
-    void alert(String message) {
-        notifier.send(message);
-    }
-}
-```
-
-**Remember when coding**
-
-- Program to an interface where it makes substitution useful; do not add interfaces mechanically.
-- Use constructor injection for required collaborators so an object cannot silently lack a dependency.
-- Keep interfaces cohesive and avoid exposing implementation details.
-
-### Enums, records, and sealed types
+## Enums, records, and sealed types
 
 An `enum` defines a fixed set of named instances. Unlike a set of integer constants, a Java enum is a reference type: it can have fields, constructors, and methods. Its constructors are implicitly private, and an enum cannot extend another class because it already extends `java.lang.Enum`.
 
@@ -1720,149 +2255,25 @@ Before considering a topic learned, check that you can answer:
 - What are the time/space costs and mutation/ordering guarantees?
 - How would I write a test for its normal case and one failure case?
 
-## Basic Java Concepts
-
-### Class Structure
-
-`Every line of code that runs in Java must be inside a class.` A class is a blueprint for creating objects and contains the code that defines the behavior of the program.
-
-In our example, we have defined a class named `Hello`:
-
-```java
-public class Hello {
-    public static void main(String args[]){
-        System.out.println("Elakiya you can be a coder one day");
-    }
-}
-```
-
-### Naming Conventions
-
-- The class name should always start with an uppercase first letter. This is a standard Java convention known as PascalCase.
-- In our example, the class is named `Hello`, which starts with an uppercase 'H'.
-- Note: Java is case-sensitive. `MyClass` and `myclass` would be treated as two completely different names.
-
-### File Naming Requirements
-
-The name of the Java file must match the class name exactly. So if your class is called `Hello`, the file must be saved as `Hello.java`. This is because Java uses the class name to find and run your code. If the names don't match, Java will give a compilation error and the program will not run.
-
-### The main Method
-
-The `main` method is the entry point of any Java application. It is where the program starts executing. The signature `public static void main(String args[])` is standard and required for standalone Java programs. When you run a Java program, the Java Virtual Machine (JVM) looks for the `main` method to begin executing the code. Without a `main` method, the JVM wouldn't know where to start.
-
-### System.out.println() Explanation
-
-`System.out.println()` is used to print text to the console (screen). While it may look long, you can think of it as a single command that means: "Send this text to the screen."
-
-Here's what each part means (you will learn the details later):
-
-- `System` is a built-in Java class that provides access to system resources.
-- `out` is a member of the `System` class, short for "output". It represents the standard output stream.
-- `println()` is a method, short for "print line". It prints the specified text followed by a newline character.
-
-### Multiple Print Statements
-
-You can add as many `println()` methods as you want in your program. Each call will print on a new line:
-
-```java
-public class Hello {
-    public static void main(String args[]){
-        System.out.println("Elakiya you can be a coder one day");
-        System.out.println("Keep practicing!");
-        System.out.println("Java programming is fun!");
-    }
-}
-```
-
-This would output:
-
-```
-Elakiya you can be a coder one day
-Keep practicing!
-Java programming is fun!
-```
-
-## How to Run the Program
-
-1. Make sure you have Java installed on your system.
-2. Open a terminal and navigate to the directory containing `Hello.java`.
-3. Compile the program: `javac Hello.java`
-4. Run the program: `java Hello`
-
-## Learning Resources
-
-- [Oracle Java Tutorials](https://docs.oracle.com/javase/tutorial/)
-- [Java Documentation](https://docs.oracle.com/en/java/)
-
-## The print() Method
-
-There is also a `print()` method, which is similar to `println()`. The only difference is that it does not insert a new line at the end of the output.
-
-For example:
-
-```java
-public class Hello {
-    public static void main(String args[]){
-        System.out.print("Hello ");
-        System.out.print("World!");
-    }
-}
-```
-
-This would output:
-
-```
-Hello World!
-```
-
-Notice that both words appear on the same line, without a newline between them. If you used `println()` for both, they would appear on separate lines.
-
-## Data types
-
-Data types are divided into two groups:
-
-### Primitive Data types
-
-Primitive data types - includes byte, short, int, long, float, double, boolean and char
-
-### Non-Primitive Data types
-
-Non-primitive data types - such as String, Arrays and Classes
-
-Non-primitive data types are called reference types because they refer to objects.
-
-The main differences between primitive and non-primitive data types are:
-
-Primitive types in Java are predefined and built into the language, while non-primitive types are created by the programmer (except for String).
-
-Non-primitive types can be used to call methods to perform certain operations, whereas primitive types cannot.
-
-Primitive types start with a lowercase letter (like int), while non-primitive types typically starts with an uppercase letter (like String).
-
-Primitive types always hold a value, whereas non-primitive types can be null.
-
-Examples of non-primitive types are Strings, Arrays, Classes etc.
-
-The var Keyword
-The var keyword was introduced in Java 10 (released in 2018).
-
-The var keyword lets the compiler automatically detect the type of a variable based on the value you assign to it.
-
-This helps you write cleaner code and avoid repeating types, especially for long or complex types.
-
-## Operators
-
-A String in Java is actually an `object`, which means it contains `methods` that can perform certain operations on strings.
-
-## String
-
-Strings are used for storing texts.
-use doble quotes for string values. String literals in Java require double quotes. Single quotes are reserved for single character values.
-String in java is object which have methods that can perform operations on strings.
-
-## Java Mastery Roadmap Study Tracker
+---
 
 ---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+---
+
+## Java Mastery Roadmap Study Tracker
 
 ### Phase 1: Core Fundamentals
 
@@ -1974,10 +2385,6 @@ String in java is object which have methods that can perform operations on strin
 
 ---
 
-## Expanded Java Notes Reference Index
-
-These notes organize the topics from the additional Java study material alongside the earlier README content. The introductory material, arrays refresher, and study roadmap above are kept in place; this appendix adds a broader reference and clarifies points that are commonly misstated.
-
 ### Index
 
 - [Java, the JVM, and the toolchain](#java-the-jvm-and-the-toolchain)
@@ -2085,9 +2492,9 @@ The exact reserved-word list depends on the Java language version. Keywords are 
 
 A **class** defines the state and behavior its objects can have; an **object** is a runtime instance of a class, with identity, state (fields), and behavior (methods). Common class descriptions include concrete, abstract, final, nested, POJO, and singleton. These are not six mutually exclusive language-level class types: for example, a class can be both final and a POJO.
 
-All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`. 
+All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`.
 
-`compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`. 
+`compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`.
 
 `finalize()` is deprecated for removal and should not be used for resource cleanup.
 
@@ -2183,25 +2590,6 @@ Neither interfaces nor abstract classes are universally "fully" or "partially" a
 `Serializable` and `Cloneable` are marker interfaces: they declare no methods and communicate a capability or signal to Java APIs. Implementing `Cloneable` permits the protected `Object.clone()` mechanism to make a shallow copy; it does not automatically provide a public clone method.
 
 **Encapsulation** groups state and behavior and controls access to state. Private fields with carefully designed methods are common, but getters and setters are not mandatory for every field; validation and invariants should remain part of the design.
-
-### Access and non-access modifiers
-
-| Access level                  | Visibility                                                                                    |
-| ----------------------------- | --------------------------------------------------------------------------------------------- |
-| `private`                     | Within the declaring top-level class (including its nested members under Java's access rules) |
-| No modifier (package-private) | Within the same package                                                                       |
-| `protected`                   | Same package, and subclasses in other packages under protected-access rules                   |
-| `public`                      | Wherever the declaring type/member is accessible                                              |
-
-Common non-access modifiers include:
-
-- `static`: class member rather than per-instance member.
-- `final`: variable assigned once; method cannot be overridden; class cannot be subclassed. A final reference cannot be reassigned, but the referenced object may still be mutable.
-- `abstract`: class cannot be instantiated directly or method has no implementation in that declaration.
-- `synchronized`: uses an object's monitor (or the class monitor for a static method) to coordinate access; it does not by itself make every aspect of a class thread-safe.
-- `transient`: excludes an instance field from default Java serialization.
-- `volatile`: gives visibility and ordering guarantees for a field between threads; it does not make compound operations such as `count++` atomic.
-- `native`: method implementation is supplied outside Java, typically through a native interface.
 
 ### Strings, equality, and wrapper classes
 
