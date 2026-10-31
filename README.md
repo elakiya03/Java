@@ -42,7 +42,9 @@
 
 ## Introduction to Java
 
-Java is a high-level, `class-based`, `object-oriented` programming language designed to have as few implementation dependencies as possible. First released by Sun Microsystems (led by James Gosling) in 1995, it is now owned and maintained by Oracle Corporation.
+Java is a high-level, `class-based`, `object-oriented` programming language with garbage collection, exception handling, and built-in concurrency support. Java source code is compiled to **bytecode**. Bytecode is not the same thing as native machine code. A Java Virtual Machine (JVM) for a particular platform loads and verifies that bytecode, then interprets it and/or compiles frequently used code to native machine code. This is the basis of Java's portability: the same bytecode can run on compatible JVM implementations for different platform.
+
+First released by Sun Microsystems (led by James Gosling) in 1995, it is now owned and maintained by Oracle Corporation.
 
 Java’s core motto is `"Write Once, Run Anywhere"` (WORA). This means that once you write and compile your Java code, the compiled bytecode can execute flawlessly on any operating system (Windows, Mac, Linux) that supports the Java platform without needing to be recompiled.
 
@@ -57,6 +59,14 @@ Java’s core motto is `"Write Once, Run Anywhere"` (WORA). This means that once
 ---
 
 ## Java versions and setup
+
+Java is often called a **compiled and interpreted** language: compilation produces bytecode, and a JVM executes it using interpretation and, commonly, runtime compilation. The phrase _write once, run anywhere_ describes the goal, provided a compatible Java runtime and required platform dependencies are available.
+
+The traditional Java editions include Java SE (the core platform), Java EE (now Jakarta EE, for enterprise application specifications), and Java ME (for constrained devices). JavaFX is a UI framework/platform, not a JDK edition. "Core Java" is an informal term rather than a separate language subset.
+
+Java is used for server-side and enterprise applications, Android development (with Android-specific tooling and runtime), distributed systems, embedded software, games, and data-processing platforms. A common application structure separates responsibilities into controller, service, and data-access (DAO/repository) layers; frameworks and project needs determine the exact architecture.
+
+JDK directory layouts vary by vendor and version. In a typical installation, `bin` contains executable tools and `lib` contains runtime and tool libraries. Do not rely on a fixed list of directories across all JDKs.
 
 Java evolves through language and library releases. A feature being part of Java today does not mean it exists in every older JDK. An **LTS** (Long-Term Support) release receives extended support from vendors; Java 17, 21, and 25 are examples of LTS releases.` Java 21` is the baseline used in this guide, and release-specific features are called out.
 
@@ -86,7 +96,8 @@ Java also supports source-file launch mode for simple experiments (`java Hello.j
 
 ## Compiling and Running a Java Program
 
-The compiler translates `.java` source into `.class` bytecode. The JVM loads classes, verifies bytecode, and executes it. A JVM may interpret code and JIT-compile frequently used code into native machine code. Bytecode plus compatible platform APIs allow the same program to run on different operating systems; native libraries, file paths, encodings, and external services can still make an application platform-dependent.
+The compiler translates `.java` source into `.class` bytecode. The JVM loads classes, verifies bytecode, and executes it.
+The **JIT (Just-In-Time) compiler** is part of many JVM implementations. It can compile frequently executed bytecode to native machine code at runtime to improve performance; it does not normally produce a `.obj` file as a required stage. A JVM may interpret code and JIT-compile frequently used code into native machine code. Bytecode plus compatible platform APIs allow the same program to run on different operating systems; native libraries, file paths, encodings, and external services can still make an application platform-dependent.
 
 ```text
 source (.java) -> javac -> bytecode (.class) -> JVM -> program execution
@@ -94,10 +105,19 @@ source (.java) -> javac -> bytecode (.class) -> JVM -> program execution
 
 The JDK includes development tools and runtime components. The JVM is the virtual machine; a JRE is a runtime distribution/concept containing the JVM and supporting libraries. Since Java 9, vendors commonly distribute runtimes differently, so do not assume every installation has a separately named `jre` directory.
 
+| Term      | Meaning                                                                                                                                                                                                                   |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| JVM       | The virtual machine that loads and executes Java bytecode. The implementation is platform-specific.                                                                                                                       |
+| JRE       | The runtime components needed to run Java applications, including a JVM and libraries. Historically distributed separately; modern Java distributions commonly package runtime use through a JDK or custom runtime image. |
+| JDK       | Development kit containing tools such as `javac`, `java`, `javadoc`, and `jar`, plus runtime components.                                                                                                                  |
+| `javac`   | Compiles Java source files into class files.                                                                                                                                                                              |
+| `java`    | Launches a Java application on a JVM.                                                                                                                                                                                     |
+| `javadoc` | Generates API documentation from source and documentation comments.                                                                                                                                                       |
+| `jar`     | Creates and manages Java archive files.                                                                                                                                                                                   |
+
 **Remember when coding**
 
 - Compilation catches syntax and type errors; runtime behavior can still fail.
-- Bytecode is not the same thing as native machine code.
 - A JVM implementation is platform-specific even though Java bytecode is portable.
 
 ---
@@ -129,7 +149,40 @@ public class StockService {
 
 ---
 
-## Java Input, output, and formatting
+## Java I/O and formatting
+
+The `java.io` package provides stream-based I/O. A stream is a flow of data between a source and a destination:
+
+Common examples include
+
+- `FileInputStream` / `FileOutputStream` for bytes;
+- `FileReader` / `FileWriter` for text; `BufferedInputStream`,
+- `BufferedOutputStream`, `BufferedReader`, and `BufferedWriter` for buffering;
+- `DataInputStream` / `DataOutputStream` for primitive data formats; and
+- `ObjectInputStream` / `ObjectOutputStream` for Java object serialization.
+- `InputStreamReader` and `OutputStreamWriter` bridge byte and character streams.
+- `PrintStream` and `PrintWriter` provide convenient formatted and line-oriented output.
+
+`File` represents a path and provides operations such as `exists()`, `isFile()`, `isDirectory()`, `getAbsolutePath()`, `list()`, `mkdir()`, and `createNewFile()`. `File` does not itself read or write file contents. Check operation results and handle `IOException` where applicable. For new code, `java.nio.file.Path` and `Files` often provide a more modern API.
+
+```java
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+Path path = Path.of("notes.txt");
+try (BufferedReader reader = Files.newBufferedReader(path)) {
+    String line;
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
+    }
+} catch (IOException e) {
+    System.err.println("Could not read " + path + ": " + e.getMessage());
+}
+```
+
+`BufferedReader` wraps a `Reader`; `BufferedWriter` wraps a `Writer`. `PrintWriter` supports methods such as `print`, `println`, `printf`, and `format`. Always close I/O resources, preferably with try-with-resources. `BufferedReader` can read text efficiently, including one line at a time. `Scanner` can tokenize and parse text into primitive values, which is convenient but often slower for large input. Select the API appropriate to the input format and performance needs.
 
 Java I/O commonly has two use cases: **console I/O**, for interacting with a user in a terminal, and **file I/O**, for reading and writing stored data. For files, Java provides byte streams for binary data and character streams for text.
 
@@ -187,7 +240,7 @@ public class FastConsole {
 
 ### File I/O: text and binary data
 
-**Character streams** (`Reader` and `Writer`) are for text. Choose an explicit charset when reading or writing files so the text encoding is predictable. `Files.newBufferedReader` and `Files.newBufferedWriter` are convenient buffered APIs:
+**Character streams** (`Reader` and `Writer`) and their subclasses handle text characters with character encoding. Choose an explicit charset when reading or writing files so the text encoding is predictable. `Files.newBufferedReader` and `Files.newBufferedWriter` are convenient buffered APIs:
 
 ```java
 import java.io.BufferedReader;
@@ -370,6 +423,18 @@ System.out.println(names.size()); // 1
 
 ---
 
+## Variables
+
+A variable is a named storage location with a declared type. Its scope and lifetime depend on where it is declared. The type determines the operations that are valid. Java is statically typed: the compiler checks types before the program runs.
+
+- **Local variable:** declared in a method, constructor, or block. It must be assigned before use and has no automatic default value.
+- **Instance field:** belongs to an object. Each object has its own instance fields; fields receive default values when the object is created.
+- **Static field (class variable):** belongs to the class and is shared by its instances; it is initialized as part of class initialization.
+- **Parameters** receive values when a method is called.
+- **Array elements** receive default values when the array is created.
+
+---
+
 ## Data types
 
 The main differences between `primitive` and `non-primitive` data types are:
@@ -381,41 +446,44 @@ The main differences between `primitive` and `non-primitive` data types are:
 
 ### Primitive Data types
 
-Java's eight **primitive types** are `byte`, `short`, `int`, `long`, `float`, `double`, `char`, and `boolean`. All other types—including arrays, strings, enums, and records—are reference types. A reference can be `null`; primitives cannot.
+Java has eight primitive types: `byte`, `short`, `int`, `long`, `float`, `double`, `char`, and `boolean`.
 
-| Type family    | Types                          | Practical note                                                                                                             |
+Default field and array values include `0` for integer types, `0.0` for `double`, `0.0f` for `float`, `false` for `boolean`, `'\u0000'` for `char` , and `null` for `references`. Local variables do not receive these defaults.
+
+| Primitive | Typical width                                                                                                  |
+| --------- | -------------------------------------------------------------------------------------------------------------- |
+| `byte`    | 8-bit signed integer                                                                                           |
+| `short`   | 16-bit signed integer                                                                                          |
+| `int`     | 32-bit signed integer                                                                                          |
+| `long`    | 64-bit signed integer                                                                                          |
+| `float`   | 32-bit IEEE 754 floating-point                                                                                 |
+| `double`  | 64-bit IEEE 754 floating-point                                                                                 |
+| `char`    | 16-bit UTF-16 code unit; not necessarily a whole Unicode code point                                            |
+| `boolean` | Represents `true` or `false`; its storage size is not specified as a fixed number of bits by the Java language |
+
+| Type family    | Types                          |                                                                                                                            |
 | -------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
 | Integral       | `byte`, `short`, `int`, `long` | `int` is the usual whole-number type; use `long` for a wider range, with `L` on large literals if needed.                  |
 | Floating point | `float`, `double`              | `double` is the usual choice; decimal floating-point is approximate. Use `BigDecimal` for many decimal money calculations. |
 | Character      | `char`                         | A 16-bit UTF-16 code unit; a visible Unicode character may require more than one `char`.                                   |
 | Boolean        | `boolean`                      | Only `true` or `false`; Java does not treat numbers as booleans.                                                           |
 
-Variables have different scopes and initialization rules:
+`final` means a variable can be assigned only once. For a reference, `final` prevents assigning a different reference; it does not make the referenced object immutable.
 
-- **Local variables** exist within a method or block. They must be definitely assigned before use.
-- **Parameters** receive values when a method is called.
-- **Instance fields** belong to each object and receive default values.
-- **Static fields** belong to a class and are shared by its instances within the same class loader.
-- **Array elements** receive default values when the array is created.
-
-Default field and array values include `0` for integer types, `0.0` for `double`, `0.0f` for `float`, `false`, `'\u0000'`, and `null` for references. Local variables do not receive these defaults.
-
-`final` means a variable can be assigned only once. For a reference, `final` prevents assigning a different reference; it does not make the referenced object immutable. `var` (Java 10+) asks the compiler to infer a local variable's static type from its initializer; it is not dynamic typing and cannot be used for fields, method parameters, or uninitialized locals.
+```java
+final int maxAttempts = 5;      // cannot be reassigned.
+```
 
 ### Non-Primitive Data types
 
-**Non-primitive** data types - such as `String`, `Arrays` and `Classes`. Non-primitive data types are called reference types because they refer to objects.
+**Non-primitive** data types - such as `String`, `Arrays` , `Enum`, `Record` and `Classes`. Non-primitive data types are called reference types because they refer to objects.
 
 ### The var Keyword
 
-The var keyword was introduced in Java 10 (released in 2018). The var keyword lets the compiler automatically detect the type of a variable based on the value you assign to it. This helps you write cleaner code and avoid repeating types, especially for long or complex types.
-
-A variable is a named reference or value with a type. The type determines the operations that are valid. Java is statically typed: the compiler checks types before the program runs.
+The `var` (Java 10+) asks the compiler automatically infer a local variable's static type from its initializer. it is not dynamic typing and cannot be used for fields, method parameters, or uninitialized locals.
 
 ```java
-int attempts = 3;               // primitive value
 String userName = "Elakiya";    // reference to a String object
-final int maxAttempts = 5;      // cannot be reassigned
 var message = "Ready";          // inferred local type: String
 ```
 
@@ -425,11 +493,25 @@ var message = "Ready";          // inferred local type: String
 
 In Java, there are two main types of casting:
 
-`Widening Casting `(automatic) - converting a smaller type to a larger type size
-byte -> short -> char -> int -> long -> float -> double
+1. **Widening Casting**(automatic and implicit) - converting a smaller type to a larger type size
 
-`Narrowing Casting` (manual) - converting a larger type to a smaller type size
-double -> float -> long -> int -> char -> short -> byte
+- **Numeric Widening Path**: `byte -> short -> int -> long -> float -> double`
+- **Character Widening Path**: `char -> int -> long -> float -> double`
+
+- `char` can widen to `int`, but `short` does not widen to `char` (because a char cannot store negative values)
+
+2. **Narrowing Casting**(manual and explicit) - converting a larger type to a smaller type size and may lose information
+   `double -> float -> long -> int -> char/short -> byte`
+
+- **Floating-Point Truncation**: Narrowing a double or float to an integer type does not round the number; it completely truncates all decimal places toward zero.
+
+```java
+int count = 12;
+long largerCount = count;       // Widening
+
+double price = 9.99;
+int wholePrice = (int) price;   // Narrowing: fractional part is discarded
+```
 
 ---
 
@@ -511,6 +593,18 @@ System.out.println(a || b); // true
 System.out.println(!a);     // false
 ```
 
+### Bitwise operators
+
+**Bitwise:** `&`, `|`, `^`, `~`
+
+### Shift operators
+
+**Shift:** `<<`, `>>` (sign-extending right shift), `>>>` (zero-filling right shift)
+
+### Unaray operators
+
+**Unary:** `+`, `-`, `++`, `--`, `!`, `~`
+
 ### Operator Precedence (High to Low)
 
 1. Postfix: `expression++` `expression--` `()` `[]` `.`
@@ -527,11 +621,6 @@ System.out.println(!a);     // false
 12. Conditional OR: `||`
 13. Ternary conditional: `?:`
 14. Assignment: `=` and compound assignment operators
-
-- Parentheses override precedence
-- Multiplication/division before addition/subtraction
-- Logical operators have lower precedence than relational operators
-- Use parentheses for clarity when unsure
 
 ```java
 int total = 17;
@@ -1175,10 +1264,17 @@ A String in Java is actually an `object`, which means it contains `methods` that
 - Strings are used for storing texts.
 - String literals in Java require double quotes.
 - Single quotes are reserved for single character values.
+- String literals are interned in the string pool
+- `String` provides methods such as `charAt`, `equals`, and `compareTo`.
+- `==` compares primitive values, or reference identity when used with references.
+- `equals()` compares logical equality when a class implements it appropriately.
+- If `equals()` is overridden, `hashCode()` must be implemented consistently.
+- `compareTo()` (from `Comparable`) orders values and conventionally returns a negative number, zero, or a positive number.
 
 ```java
 String first = "Java";
-String second = first + " SE";           // first remains "Java"
+String second = first + " SE";        // first remains "Java"
+
 StringBuilder builder = new StringBuilder();
 builder.append("Java").append(" SE");
 String result = builder.toString();
@@ -1218,15 +1314,19 @@ StringBuilder is a mutable sequence of characters similar to StringBuffer , but 
 
 ## Oops
 
-### Classes and objects
+Java supports classes, objects, encapsulation, inheritance, and polymorphism, but it is not considered a _pure_ object-oriented language because it has primitive types and operations that are not performed through objects. Java does not support multiple inheritance of classes; a class can implement multiple interfaces.
 
-A `class` defines a type: its fields represent state, constructors establish valid initial state, and methods represent behavior. An `object` is an instance of a class created at runtime. A reference variable refers to an object; it is not the object itself.
+### Classes and Objects
 
-#### Class Structure
+A `class` define sits fields represent state, constructors establish valid initial state, and methods represent behavior; an `object` is a runtime instance of a class, with identity, state (fields), and behavior (methods). A reference variable refers to an object; it is not the object itself.
+
+Common class descriptions include concrete, abstract, final, nested, POJO, and singleton. These are not six mutually exclusive language-level class types: for example, a class can be both final and a POJO.
+
+All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`. `compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`. `finalize()` is deprecated for removal and should not be used for resource cleanup.
+
+#### Class
 
 `Every line of code that runs in Java must be inside a class.` A class is a blueprint for creating objects and contains the code that defines the behavior of the program.
-
-In our example, we have defined a class named `Hello`:
 
 ```java
 public class Hello {
@@ -1236,7 +1336,16 @@ public class Hello {
 }
 ```
 
-### Concrete, abstract, and final classes
+##### Class Initialization
+
+Class Initialization (Runs ONCE per Class)
+
+Before you can create an object, Java needs to load the class itself into memory. This happens generally once when the class loader first reads the class.
+• What runs: Static variables (static fields) and Static Initializer Blocks (static { ... }).
+• The Order: They run in the exact source order (top to bottom) they are written in the file.
+• Rule: This happens before any object is created and before the main method or constructor runs.
+
+##### Types of Classes
 
 A **concrete class** is a class that can be instantiated. It must provide implementations for inherited abstract methods. A **non-abstract class** may still declare ordinary methods that subclasses can override.
 
@@ -1289,7 +1398,7 @@ class BankAccount {
 
 Class descriptions can overlap: a class may be concrete, final, and a POJO at the same time; a nested class may also be abstract or final. Records are a distinct Java class form for data carriers and are covered under [enums, records, and sealed types](#enums-records-and-sealed-types).
 
-### Java supports nested Class types:
+##### Java supports nested Class types:
 
 - A **static nested class** is declared inside another class with `static`. It has no implicit enclosing-instance reference and cannot directly access the outer class's instance members.
 
@@ -1330,13 +1439,68 @@ Outer outer = new Outer();
 Outer.Inner inner = outer.new Inner();
 ```
 
+`static` members belong to the class rather than an individual instance. A static method can be called using the class name and can directly access static members, but it has no `this` or `super` reference and cannot directly access instance members without an object. Static fields are shared class state, not a mechanism that guarantees one copy across all class loaders.
+
+Only a **nested** class can be declared `static`; a top-level class cannot. A static nested class has no implicit reference to an enclosing instance, but it can access enclosing class members subject to access rules.
+
+A **class loader** loads class definitions into the JVM when needed. The built-in loader hierarchy commonly includes the bootstrap, platform, and application class loaders; exact implementation details vary. Classes are not all loaded into memory at program start.
+
+Static methods are not overridden. If a subclass declares a compatible static method with the same signature, it hides the superclass method; method selection is based on the compile-time type. Static methods can still be overloaded with different parameter lists.
+
+#### Object
+
+Common ways to obtain or create an object include:
+
+1. The `new` operator and a constructor.
+2. Reflection, such as `Constructor.newInstance()` (the older `Class.newInstance()` API is deprecated).
+3. Cloning, when the class supports it.
+4. Deserialization of a serialized object.
+5. A factory method that returns a new or reused object.
+
+Object Initialization (Runs EVERY TIME you use new)
+
+Every single time you create a new object instance (new MyClass()), Java executes a strict 3-step sequence.
+
+1. Superclass First: The parent class (super) initializes completely before the child class (subclass) starts.
+2. Fields & Initializer Blocks (Source Order): Inside the class, Instance Field Initializers (e.g., int age = 20;) and Instance Initializer Blocks ({ ... }) run in the exact source order (top to bottom) they appear in the file.
+3. Constructor Body: The actual constructor method (e.g., public MyClass() { ... }) runs last.
+
+A factory method is a design approach that controls object creation, not a separate JVM allocation mechanism. A class can implement `Cloneable` and expose a suitable `clone()` method, but `Object.clone()` is a shallow-copy mechanism and cloning requires careful design. A `hashCode()` value is not a unique object ID.
+
+`Serializable` and `Cloneable` are marker interfaces: they declare no methods and communicate a capability or signal to Java APIs. Implementing `Cloneable` permits the protected `Object.clone()` mechanism to make a shallow copy; it does not automatically provide a public clone method.
+
+**Serialization** converts an object's serializable state into a byte representation; **deserialization** reconstructs an object from that representation. With Java object serialization, classes commonly implement `Serializable`, and object streams provide methods such as `writeObject()` and `readObject()`. Deserializing untrusted data is unsafe; prefer safer, explicitly defined data formats for external input.
+
+The `transient` modifier excludes an instance field from default Java serialization. After deserialization, such a field has its default value unless restored separately. Static fields are class state rather than per-object serialized state, and `final` fields have additional serialization constraints; applying `transient` to these does not make them useful serialized state.
+
+A `singleton` is a design pattern intended to provide one shared instance within a defined scope. A private constructor plus a static accessor is one approach, but thread safety, serialization, class loaders, and testing also matter. An enum singleton is a robust option in many cases. `getInstance()` is a convention, not a required Java mechanism.
+
+An inner class is a non-static nested class and has an enclosing instance. A static nested class does not have an implicit enclosing instance:
+
+```java
+class Outer {
+    class Inner { }
+    static class Nested { }
+}
+
+Outer outer = new Outer();
+Outer.Inner inner = outer.new Inner();
+Outer.Nested nested = new Outer.Nested();
+```
+
+Relationships between objects
+
+- **Association:** a general relationship in which objects know about or use one another. It may be one-to-one, one-to-many, many-to-one, or many-to-many.
+- **Aggregation:** a weaker whole-part relationship in which the parts can exist independently of the whole.
+- **Composition:** a stronger ownership relationship in which a part's lifecycle is closely tied to its owning whole.
+
 ### Constructors
 
-A `constructor` in Java is a special method that is used to initialize objects. `new` creates an object and invokes a constructor to initialize it. A constructor has the same name as its class and no return type—not even `void`. It is not responsible for allocating the object's memory.
+A `constructor` in Java is a special method that is used to initialize new objects. `new` creates an object and invokes a constructor to initialize it. A constructor has the same name as its class and no return type—not even `void`. It is not responsible for allocating the object's memory. A constructor is not a method that returns an object reference.
 
 #### Types of Constructors
 
-The three commonly taught constructor types are the compiler-provided default constructor, an explicitly written no-argument constructor, and a parameterized constructor. The important distinction is whether the constructor is supplied by the compiler or written by you, and whether it accepts parameters.
+The three commonly constructor types are the compiler-provided default constructor, an explicitly written no-argument constructor, and a parameterized constructor.
 
 **1. Default constructor:** If a class declares no constructors, the compiler supplies a no-argument constructor. This is called the _default constructor_:
 
@@ -1378,11 +1542,19 @@ class Scoreboard {
 Scoreboard board = new Scoreboard(100);
 ```
 
+**4. Copy Constructor**
+**5. Private Constructor**
+
+- A **copy constructor** is a user-defined convention that initializes an object from another object of the same class.
+- A **private constructor** restricts construction from outside the class and is used in patterns such as utility classes or singletons.
+
 #### Constructor overloading and constructor chaining
 
 **Constructor overloading** means defining multiple constructors in one class with different parameter lists. The lists may differ by the `number of parameters`, `their types`, or the `order of different types`. Changing only access modifiers does not create an overload; two constructors with the same parameter types are duplicates and will not compile. Java selects the applicable constructor at compile time from the arguments in the `new` expression and their types.
 
-**Constructor chaining** uses `this(...)` to call another constructor in the same class. In this example, the no-argument and name-only constructors delegate to the three-argument constructor, so the field assignments are written only once:
+**Constructor chaining** uses `this(...)` to call another constructor in the same class or `super(...)` to call a superclass constructor; such a call must be the first constructor statement in Java versions before Java 25. Constructors cannot be `static`, `final`, `abstract`, or `synchronized`.
+
+In this example, the no-argument and name-only constructors delegate to the three-argument constructor, so the field assignments are written only once:
 
 ```java
 class CricketPlayer {
@@ -1578,6 +1750,8 @@ Object-oriented programming is often explained through four related ideas:encaps
 
 ### Encapsulation
 
+**Encapsulation** groups state and behavior and controls access to state. Private fields with carefully designed methods are common, but getters and setters are not mandatory for every field; validation and invariants should remain part of the design.
+
 Encapsulation groups an object's data and the behavior that works with that data in one class, while controlling how code outside the class can access or change its state. This lets the object protect its own rules, called **invariants**. For example, a player's score should not become negative.
 
 Encapsulation helps keep state valid, lets the implementation change behind a stable public API, and allows a class to expose only the operations callers need. A class can offer read-only access by providing a getter without a setter; a setter is not required for every field. `Getters and setters` are useful tools, but encapsulation is about controlling access and preserving invariants, not mechanically generating one of each for every field.
@@ -1662,6 +1836,8 @@ This is a teaching example, not a production credential design: do not hard-code
 
 Abstraction exposes the important behavior of a type while hiding implementation details. Java primarily uses **abstract classes** and **interfaces** to express abstractions, but they solve different design problems.
 
+Neither interfaces nor abstract classes are universally "fully" or "partially" abstract; choose based on whether you need a shared class implementation/state or a contract that multiple classes can implement.
+
 | Feature              | Abstract class                                                                                                     | Interface                                                                                    |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
 | State                | Can have instance fields, including mutable state, and static fields.                                              | Fields are implicitly `public static final` constants; there is no per-instance state.       |
@@ -1672,9 +1848,19 @@ Abstraction exposes the important behavior of a type while hiding implementation
 | Direct instantiation | Cannot be instantiated directly; a concrete subclass can be created.                                               | Cannot be instantiated directly; create an implementing class.                               |
 | Typical purpose      | Share state or implementation among closely related classes.                                                       | Define a capability or contract that different classes can provide.                          |
 
+#### Abstract Class
+
 An abstract class may have no abstract methods and still cannot be instantiated directly. A concrete subclass must implement inherited abstract methods unless it is itself abstract or inherits an implementation. When a subclass is constructed, its superclass constructor runs through `super(...)` (explicitly or implicitly), initializing the superclass portion of the object.
 
+An abstract class cannot be instantiated directly and may contain fields, constructors, abstract methods, and implemented methods. A concrete subclass must implement inherited abstract methods unless it is itself abstract.
+
+Accessor methods commonly read state (often named `get...`); mutator methods commonly update it (often named `set...`). Abstract methods declare behavior without a body in an abstract class or interface.
+
+#### Interface
+
 An interface's abstract methods are public, so their implementations in a class must be `public`. A class does not need to implement an inherited `default` method unless it wants to replace it. Interfaces can extend other interfaces with `extends`, including multiple interfaces; they do not use `implements` and cannot extend classes.
+
+An **interface** defines a contract that classes can implement. A class can implement multiple interfaces, and an interface can extend multiple interfaces. Interfaces can contain constants, abstract methods, and (in modern Java) default, static, and private methods. Interface fields are implicitly `public static final`; ordinary abstract interface methods are implicitly `public abstract`. Interfaces do not have constructors or per-instance fields.
 
 This example combines the two: `Animal` provides shared state and implementation, while `Companion` combines two interfaces. `Pet` also provides a `default` method:
 
@@ -1756,27 +1942,43 @@ Inheritance expresses an **is-a** relationship. A Java class extends at most one
 #### Types of Inheritance
 
 1. **Single Inheritance** - A single child class extends exactly one single parent class. This is the simplest form of inheritance.
+
+```java
+class Animal {
+    void speak() { System.out.println("sound"); }
+}
+
+class Dog extends Animal {
+    @Override
+    void speak() { System.out.println("bark"); }
+}
+
+Animal pet = new Dog();
+pet.speak();                         // "bark": runtime dispatch
+```
+
 2. **Multilevel Inheritance** -
 3. **Hierarchical Inheritance**
 4. **Multiple Inheritance**
 5. **Hybrid Inheritance**
+
+Java does not allow a class to extend multiple classes, avoiding ambiguities such as the diamond problem; multiple interfaces can be implemented.
 
 ### Polymorphism
 
 #### Compile Time Polymorphism (Method Overloading)
 
 - Static binding
-  **Overloading**, by contrast, is resolved using compile-time argument types and distinct parameter lists.
+
+**Overloading** uses the same method name with different parameter lists. The compiler selects an overload using compile-time types. Changing only the return type does not create a valid overload.
 
 #### Run Time Polymorphism (Method Overriding)
 
-- Dynamic binind
+- Dynamic binding
 
-Method Overriding occurs when a child class provides a custom implementation for a method that already exists in its parent class.
+**Overriding** replaces an inherited instance-method implementation while respecting the method contract. The runtime object determines which overridden implementation runs. Use `@Override` so the compiler detects signature mistakes. A child method that overrides a parent method must follow Java's return-type, access, and exception compatibility rules.
 
-**Overriding** replaces an inherited instance-method implementation while respecting the method contract. Use `@Override` so the compiler detects signature mistakes. A static method is hidden, not overridden; private methods are not inherited as overridable methods. A final method cannot be overridden, and a final class cannot be subclassed.
-
-Java has no `virtual` keyword. Overridable instance methods use runtime dispatch by default: when a subclass overrides a method, the implementation on the actual object's class is called. This is sometimes described as Java methods being "virtual by default," but it does not apply to `static` methods (which are hidden, not overridden), `private` methods (which are not inherited for overriding), or `final` methods (which cannot be overridden).
+Java has no `virtual` keyword. Overridable instance methods use runtime dispatch by default: when a subclass overrides a method, the implementation on the actual object's class is called. This is sometimes described as Java methods being "virtual by default," but it does not apply to `static` methods (which are hidden, not overridden), `private` methods (which are not inherited for overriding), `final` methods (which cannot be overridden) or a final class (cannot be subclassed).
 
 ```java
 class Animal {
@@ -1818,6 +2020,8 @@ Upcasting is casting a subtype to a super type in an upward direction to the inh
 
 2. **Downcasting**
 
+Downcasting (superclass reference to a subclass type) requires an explicit cast and is only valid when the object really has that subtype; otherwise it throws `ClassCastException`. Use `instanceof` (including pattern matching where supported) when a runtime type check is needed.
+
 Downcasting refers to the procedure when subclass type refers to the object of the parent class is known as downcasting. If it is performed directly compiler gives an error as ClassCastException is thrown at runtime. It is only achievable with the use of instanceof operator The object which is already upcast, that object only can be performed downcast.
 
 Without perform upcast if we try to downcast , ClassCastException will be thrown.
@@ -1831,6 +2035,8 @@ Without perform upcast if we try to downcast , ClassCastException will be thrown
 ## Enums
 
 An `enum` defines a fixed set of named instances. Unlike a set of integer constants, a Java enum is a reference type: it can have fields, constructors, and methods. Its constructors are implicitly `private`, and an enum cannot extend another class because it already extends `java.lang.Enum`.
+
+`Enumeration` is a legacy interface for traversing elements of some older collection APIs. It is distinct from the `enum` language feature, which defines a fixed set of named constants.
 
 The only difference is that enum constants are `public`, `static` and `final` (unchangeable - cannot be overridden).
 
@@ -1859,6 +2065,589 @@ for (Status status : Status.values()) {
     System.out.println(status);
 }
 ```
+
+## Wrapper Class
+
+Eight wrapper classes correspond to the primitive types: `Byte`, `Short`, `Integer`, `Long`, `Float`, `Double`, `Character`, and `Boolean`. Wrappers let primitive values participate in APIs that work with objects, such as generics. Autoboxing and unboxing convert between primitives and their wrappers:
+
+```java
+Integer boxed = 7;          // Autoboxing
+int primitive = boxed;      // Unboxing
+```
+
+Unboxing a `null` wrapper throws `NullPointerException`. Prefer `valueOf(...)` or autoboxing rather than wrapper constructors, which are deprecated in modern Java.
+
+## Collections Framework
+
+The Java Collections Framework is a set of interfaces, implementations, and algorithms for storing and working with groups of objects. Most core collection types and utilities are in `java.util`; concurrent implementations and interfaces are also available in `java.util.concurrent`.
+
+### Framework overview and hierarchy
+
+`Iterable` is the root of the collection iteration model. Its `iterator()` method returns an `Iterator`, which provides `hasNext()`, `next()`, and (optionally) `remove()`.
+
+`Collection` extends `Iterable`; common subinterfaces are `List`, `Set`, and `Queue`. `Deque` extends `Queue`.
+
+`Map` is part of the Collections Framework, but **does not extend `Collection`**. It stores key-value mappings rather than a sequence of elements.
+
+```text
+Iterable
+└── Collection
+    ├── List
+    ├── Set
+    │   └── SortedSet / NavigableSet
+    └── Queue
+        └── Deque
+
+Map (separate from Collection)
+├── SortedMap / NavigableMap
+└── ConcurrentMap (in java.util.concurrent)
+```
+
+The `Collection` interface specifies common operations such as `add`, `remove`, `contains`, `size`, `isEmpty`, `iterator`, and `clear`. Not every implementation supports every optional modifying operation; an unsupported operation can throw `UnsupportedOperationException`.
+
+`Collections` (plural) is a utility class containing static methods such as `sort`, `reverse`, `shuffle`, `min`, `max`, `frequency`, `unmodifiableList`, and `synchronizedList`. It is different from the `Collection` interface (singular).
+
+`Arrays` provides utility methods for arrays, including `sort`, `binarySearch`, and `asList`.
+
+Collections store reference types, not primitive values. Use wrapper types such as `Integer` in generic collections; Java automatically boxes and unboxes primitive values when appropriate:
+
+```java
+List<Integer> numbers = new ArrayList<>();
+numbers.add(42);                      // int is boxed to Integer
+int answer = numbers.get(0);          // Integer is unboxed to int
+```
+
+Legacy classes include `Vector`, `Stack`, `Hashtable`, `Dictionary`, and `Properties`. Some provide synchronized methods, but legacy status does not mean every operation is thread-safe as a whole. `Dictionary` is an older abstract class; prefer the `Map` API for new code. For concurrent maps, consider classes from `java.util.concurrent`, such as `ConcurrentHashMap`.
+
+Calling a collection's `remove` method directly while iterating may cause `ConcurrentModificationException` for fail-fast iterators. Fail-fast behavior is best-effort bug detection, not a thread-safety guarantee. Use the iterator's `remove` when supported, or an appropriate concurrent collection for concurrent access.
+
+`Enumeration` is an older, read-only traversal API used by legacy classes. It has `hasMoreElements()` and `nextElement()`; it does not have `remove()`. `Iterator` instead has `hasNext()`, `next()`, and an optional `remove()`.
+
+`List.of(...)` (Java 9+) creates an unmodifiable list and rejects `null`. When the source is a primitive array, such as `int[]`, `Arrays.asList(array)` produces a list containing that array as one element rather than a list of boxed integers. Use a loop or stream to convert primitive array elements.
+
+Import the types used in these examples from `java.util` (and `java.util.stream.Collectors` for the stream examples).
+
+The `Java Collections Framework` provides a set of interfaces (like List, Set, and Map) and a set of classes (ArrayList, HashSet, HashMap, etc.) that implement those interfaces.
+
+All of these are part of the `java.util` package.
+
+They are used to store, search, sort, and organize data more easily - all using standardized methods and patterns.
+
+### iterable iterface
+
+#### Iteration, ordering, and utilities
+
+Use the enhanced `for` loop when you only need each element. Use an index loop when you need list indexes, or an `Iterator` when you need iterator-supported removal while traversing:
+
+```java
+List<String> languages = new ArrayList<>(List.of("Java", "Kotlin", "Scala"));
+
+for (String language : languages) {
+    System.out.println(language);
+}
+
+for (int i = 0; i < languages.size(); i++) {
+    System.out.println(i + ": " + languages.get(i));
+}
+
+Iterator<String> iterator = languages.iterator();
+while (iterator.hasNext()) {
+    if (iterator.next().equals("Kotlin")) {
+        iterator.remove();            // Safe removal through this iterator
+    }
+}
+```
+
+### Collection interface
+
+The Collection interface in Java is the root interface for representing a group of individual objects as a single unit. It is part of the Java Collections Framework and defines common operations for working with collections of objects.
+
+It provides methods for operations such as adding, removing, checking, and iterating over elements.
+Interfaces such as List, Set, and Queue extend the Collection interface.
+
+1. The Core Interfaces (The Parent Blueprints)
+
+Every collection you've used belongs to a strict hierarchy. Knowing the top-level interfaces helps you understand what a collection can do before looking at its implementation.
+• Iterable: The grandfather of all collections. It has only one job: providing the ability to iterate using a for-each loop.
+• Collection: The direct child of Iterable. It contains core methods like .add(), .remove(), .size(), and .isEmpty(). (List, Set, and Queue all inherit from this).
+• Map: Important Note: Map is part of the Collections Framework, but it does not extend the Collection or Iterable interfaces. It is a completely separate tree branch because it handles key-value pairs rather than single elements.
+
+### Big types of collection
+
+1. List - ArrayList, LinkedList
+2. Set - HashSet, TreeSet, LinkedHashSet
+3. Map - HashMap, TreeMap, LinkedHashMap
+4. queue -
+
+The Java Collections Framework provides a set of interfaces (like List, Set, and Map) and a set of classes (ArrayList, HashSet, HashMap, etc.) that implement those interfaces.
+
+### List Interface
+
+A `List` is an ordered sequence with index-based access. Lists allow duplicates; some implementations also permit `null`.
+
+```java
+List<String> names = new ArrayList<>();
+names.add("Ava");
+names.add("Noah");
+names.add("Ava");                     // Duplicates are allowed
+System.out.println(names.get(0));     // Index 0
+```
+
+| Implementation | Main characteristics                                                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ArrayList`    | Resizable array; fast indexed access and usually efficient append; inserting/removing in the middle shifts later elements. Not synchronized by default.     |
+| `LinkedList`   | Doubly linked list; implements both `List` and `Deque`. Indexed access requires traversal, so it is usually not the best choice for frequent random access. |
+| `Vector`       | Legacy resizable array with synchronized individual methods. Synchronization does not make multi-step operations automatically atomic.                      |
+| `Stack`        | Legacy LIFO stack that extends `Vector`; prefer `Deque` (often `ArrayDeque`) for stack operations in new code.                                              |
+
+- add() Adds an element to the end of the list
+- get() Returns the element at the specified position
+- set() Replaces the element at the specified position
+- remove() Removes the element at the specified position
+- size() Returns the number of elements in the list
+
+#### ArrayList
+
+`ArrayList` grows as needed, but its exact capacity and growth policy are implementation details, not guarantees to rely on. `ArrayList<Integer>` contains `Integer` references, not primitive `int` storage.
+
+`addAll` adds every element from another collection. `Arrays.asList` creates a fixed-size list backed by the given reference-type array; changing an element through either view updates the other, but adding or removing elements is unsupported. Wrap it in an `ArrayList` when a resizable list is needed:
+
+```java
+List<Integer> fixedSize = Arrays.asList(1, 2, 3);
+List<Integer> resizable = new ArrayList<>(fixedSize);
+resizable.add(4);
+
+List<Integer> alsoResizable = new ArrayList<>();
+alsoResizable.addAll(fixedSize);
+```
+
+#### LinkedList
+
+The LinkedList class is a collection which can contain many objects of the same type, just like the ArrayList.
+
+The LinkedList class has the same methods as ArrayList because both follow the List interface. This means you can add, change, remove, or clear elements in a LinkedList just like you would with an ArrayList.
+
+However, while the ArrayList class and the LinkedList class can be used in the same way, they are built very differently.
+
+How the ArrayList works
+The ArrayList class has a regular array inside it. When an element is added, it is placed into the array. If the array is not big enough, a new, larger array is created to replace the old one and the old one is removed.
+
+How the LinkedList works
+The LinkedList stores its elements in "containers." The list has a link to the first container and each container has a link to the next container in the list. To add an element to the list, the element is placed into a new container and that container is linked to one of the other containers in the list.
+Another useful class in the java.util package is the Collections class, which include the sort() method for sorting lists alphabetically or numerically.
+
+Use an ArrayList for storing and accessing data, and LinkedList to manipulate data.
+
+- addFirst() Adds an element to the beginning of the list
+- addLast() Add an element to the end of the list
+- removeFirst() Remove an element from the beginning of the list
+- removeLast() Remove an element from the end of the list
+- getFirst() Get the element at the beginning of the list
+- getLast() Get the element at the end of the list
+
+### Set Interface
+
+The Set interface is part of the Java Collections Framework and is used to store a collection of unique elements.
+
+Unlike a List, a Set does not allow duplicates, and it does not preserve the order of elements (unless you're using TreeSet or LinkedHashSet).
+
+Common classes that implement Set:
+
+HashSet - fast and unordered
+TreeSet - sorted set
+LinkedHashSet - ordered by insertion
+
+- add() Adds an element if it's not already in the set
+- remove() Removes the element from the set
+- contains() Checks if the set contains the element
+- size() Returns the number of elements
+- clear() Removes all elements
+
+#### Set and sorted set implementations
+
+A `Set` does not contain duplicate elements, where duplicates are determined using equality for hash-based sets or ordering comparisons for sorted sets. Do not assume a general `Set` has a particular iteration order.
+
+| Implementation  | Main characteristics                                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `HashSet`       | Hash-table-based; expected fast basic operations; iteration order is unspecified; permits one `null`.                                                              |
+| `LinkedHashSet` | Hash-based set that preserves insertion order; permits one `null`.                                                                                                 |
+| `TreeSet`       | Tree-based `NavigableSet`; iterates in natural or comparator order and provides range/navigation operations. Usually does not permit `null` with natural ordering. |
+
+`SortedSet` maintains elements in sorted order; `NavigableSet` adds methods for finding nearest lower/higher elements and descending views. A `TreeSet` treats elements as duplicates when its comparison returns zero, so its comparator should be consistent with `equals` when possible.
+
+#### HashSet
+
+A HashSet is a collection of elements where every element is unique.
+
+It is part of the java.util package and implements the Set interface.
+
+#### TreeSet
+
+A TreeSet is a collection that stores unique elements in sorted order.
+
+It is part of the java.util package and implements the Set interface.
+
+Tip: Unlike HashSet, which has no order, TreeSet keeps its elements sorted automatically.
+
+#### LinkedHashSet
+
+A LinkedHashSet is a collection that stores unique elements and remembers the order they were added.
+
+### Map interface
+
+The Map interface is a part of the Java Collections Framework and is used to store key-value pairs. Each key must be unique, but values can be duplicated.
+
+A Map is useful when you want to associate a key (like a name or ID) with a value (like an age or description).
+
+Common classes that implement Map:
+
+HashMap - fast and unordered
+TreeMap - sorted by key
+LinkedHashMap - ordered by insertion
+Tip: Use a Map when you want to associate values with unique keys, like storing user IDs with names.
+
+- put() Adds or updates a key-value pair
+- get() Returns the value for a given key
+- remove() Removes the key and its value
+- containsKey() Checks if the map contains the key
+- keySet() Returns a set of all keys
+
+#### Map implementations
+
+A `Map<K, V>` maps unique keys to values. Values may repeat. A map can expose its keys with `keySet()`, its values with `values()`, and key-value pairs with `entrySet()`.
+
+| Implementation  | Main characteristics                                                                                |
+| --------------- | --------------------------------------------------------------------------------------------------- |
+| `HashMap`       | Hash-table-based map; iteration order is unspecified; permits one `null` key and `null` values.     |
+| `LinkedHashMap` | Preserves insertion order by default; can also be configured for access order.                      |
+| `TreeMap`       | Sorts keys using natural ordering or a `Comparator`; implements `NavigableMap`.                     |
+| `Hashtable`     | Legacy synchronized map; disallows `null` keys and values.                                          |
+| `Properties`    | Legacy configuration class, usually used for string property names and values; extends `Hashtable`. |
+
+`HashMap` uses hashing to locate entries. Correct hash-based behavior relies on the `equals`/`hashCode` contract: equal objects must have equal hash codes, and key fields used by `equals`/`hashCode` should not be changed while the object is being used as a map key or set element.
+
+`Map.Entry<K, V>` is a nested interface representing a key-value pair. Use `entrySet()` to process keys and values together:
+
+```java
+Map<String, Integer> ages = new HashMap<>();
+ages.put("Ava", 28);
+ages.put("Noah", 31);
+
+for (Map.Entry<String, Integer> entry : ages.entrySet()) {
+    System.out.println(entry.getKey() + ": " + entry.getValue());
+}
+```
+
+Avoid converting map keys and values into separate lists if the key-value association must be retained. Convert entries instead (the resulting entries remain map-entry objects, not independent key/value arrays):
+
+```java
+List<Map.Entry<String, Integer>> entries =
+        new ArrayList<>(ages.entrySet());
+```
+
+For a map, `keySet()` and `values()` give collection views, which can be copied into lists:
+
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("Ava", 95);
+scores.put("Noah", 88);
+
+List<String> keys = new ArrayList<>(scores.keySet());
+List<Integer> values = new ArrayList<>(scores.values());
+List<Map.Entry<String, Integer>> pairs =
+        new ArrayList<>(scores.entrySet());
+```
+
+#### HashMap
+
+A HashMap stores items in key/value pairs, where each key maps to a specific value.
+
+It is part of the java.util package and implements the Map interface.
+
+Instead of accessing elements by an index (like with ArrayList), you use a key to retrieve its associated value.
+
+A HashMap can store many different combinations, such as:
+
+String keys and Integer values
+String keys and String values
+
+Understanding how a HashMap works under the hood is a classic interview favorite and the absolute key to writing high-performance Java applications.
+At its core, a HashMap is an array of buckets (nodes) that stores data in key-value pairs (Map.Entry<K, V>). Let’s pull back the curtain and look at the internal mechanics step-by-step.
+
+1. The Core Infrastructure: Buckets and Hashing
+
+When you create a HashMap, Java sets up an internal array. Each slot in this array is called a Bucket.
+When you run map.put(key, value), Java performs three distinct operations to find where to store your data:
+
+1. Calculate the Hash Code: Java runs the key's hashCode() method to generate a large integer.
+2. Apply the Hash Function (Defensive Shifting): To prevent poorly written hash codes from clogging up the map, HashMap runs a secondary bitwise shifting operation to distribute the numbers evenly:java
+   static final int hash(Object key) {
+   int h;
+   return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+   }
+   Use code with caution.
+   (Note: null keys always get sent straight to bucket 0.)
+3. Calculate the Bucket Index: Java compresses that hash value down to fit the actual size of the current array using a bitwise AND operator (which acts like a faster modulo % operation):java
+   index = (n - 1) & hash; // Where 'n' is the current array length
+   Use code with caution.
+
+4. Hash Collisions and Linked Lists
+
+What happens if two completely different keys calculate to the exact same bucket index? This is called a Hash Collision.
+HashMap handles this using a technique called Separate Chaining:
+• Initially, every bucket contains a single pointer to a linked list node (Node<K,V>).
+• When a collision occurs, the new key-value pair is simply appended to the end of the linked list inside that specific bucket.
+When you call map.get(key), Java goes to the calculated bucket index and loops through the linked list, checking if (key.equals(searchedKey)) until it finds the matching node.
+
+3. Treeification (The Java 8 Performance Booster)
+
+In older versions of Java, if a bucket suffered from terrible hash collisions, its linked list could grow infinitely long. This ruined performance, turning a fast O(1) lookup into a slow O(n) search.
+To fix this, Java 8 introduced Treeification:
+• The Threshold: If the number of items inside a single bucket crosses a threshold of TREEIFY_THRESHOLD = 8, Java automatically converts that slow linked list into a balanced Red-Black Tree (TreeNode).
+• The Performance Win: This changes the worst-case lookup time from a slow O(n) linear scan to an ultra-fast \(O(\log n)\) logarithmic search.
+• Untreeify: If you remove items from that bucket later and the count drops down to UNTREEIFY_THRESHOLD = 6, Java converts the tree back into a normal linked list to save memory overhead.
+
+4. Resizing and the Load Factor
+
+An array cannot grow automatically. If you keep adding items to a HashMap, it will eventually run out of space, collisions will skyrocket, and performance will tank. To prevent this, the map must resize itself.
+This is governed by two variables:
+• Initial Capacity: The starting size of the internal bucket array. The default value is 16 (it must always be a power of 2).
+• Load Factor: The measure of how full the map is allowed to get before it expands. The default value is 0.75 (75% full).
+
+📈 The Threshold Calculation
+
+Threshold = Capacity × Load Factor
+16 × 0.75 = 12
+The moment your HashMap contains more than 12 elements, a process called Rehashing is triggered:
+
+1. Java allocates a brand-new internal array that is double the size of the previous one (e.g., growing from 16 to 32 buckets).
+2. Because the array capacity (n) has changed, the index calculation (n - 1) & hash changes too.
+3. Every single existing item in the map is recalculated and migrated to its new correct bucket position in the larger array.
+   (Performance Tip: If you know ahead of time that you will be storing 1,000 items in a map, initialize it using new HashMap<>(1334); to completely prevent the CPU overhead of repetitive resizing!)
+
+Summary Architectural Cheat Sheet
+
+[HashMap]
+│
+├──► Array of Buckets (Default Capacity: 16)
+│ ├─── Bucket 0: [Node] ──► [Node] ──► null (Linked List for < 8 items)
+│ ├─── Bucket 1: null
+│ └─── Bucket 2: [TreeNode] (Red-Black Tree for >= 8 items)
+│ / \
+ │ [TreeNode] [TreeNode]
+│
+└──► Load Factor (0.75): Triggers capacity doubling + rehashing when 75% full.
+Would you like to see how a custom object can completely break a HashMap if you override equals() but forget to override hashCode()?
+
+#### TreeMap
+
+A TreeMap is a collection that stores key/value pairs in sorted order by key.
+TreeMap vs HashMap
+Feature HashMap TreeMap
+Order No guaranteed order Sorted by keys
+Null Keys Allows one null key Does not allow null keys
+Performance Faster (no sorting) Slower (maintains sorted order)
+
+2. TreeMap — The Automatically Sorted Map
+
+A TreeMap completely discards the bucket array and hashing system. Instead, it stores its data inside a Red-Black Tree (a self-balancing binary search tree).
+• How it works: Every time you add a key-value pair, it is inserted into the tree structure based on the value of the key.
+• Performance: Because it utilizes a binary search tree, finding, adding, or deleting items takes logarithmic time: \(O(\log n)\).
+• The Sorting Rule: Keys must either implement the Comparable interface (natural ordering like numbers or alphabetical text), or you must pass a custom Comparator when creating the map.
+
+#### LinkedHashMap
+
+A LinkedHashMap stores keys and values, and keeps them in the same order you put them in.
+
+. LinkedHashMap — The Predictable Order Map
+
+A LinkedHashMap is simply a HashMap with a doubly-linked list running through all its entries.
+• How it works: Under the hood, it maintains the exact same bucket array as a HashMap. However, each node contains two extra pointers: before and after. These pointers hook every entry together in a continuous chain.
+• Performance: It performs lookups at O(1) speed, with a fractionally higher memory footprint due to the link pointers.
+• Ordering Modes: You can configure a LinkedHashMap to maintain two different types of order: 1. Insertion Order (Default): Iterating over the map returns elements in the exact order they were put in. 2. Access Order: The map automatically rearranges its entries. Every time you call map.get() or map.put(), that specific item is yanked from its current position and moved straight to the very end of the chain.
+
+💡 Real-World Use Case: Building an LRU (Least Recently Used) Cache
+
+Because access-order mode pushes recently accessed items to the end of the chain, the items at the front of the chain are automatically the oldest and least used. You can override its removeEldestEntry() method to create a self-cleaning memory cache in just a few lines of code.
+
+### Queue interface
+
+Queue / Deque: A collection designed for holding elements prior to processing, typically operating in a First-In-First-Out (FIFO) manner or via double-ended operations (e.g., PriorityQueue, ArrayDeque).
+
+#### Queue and deque implementations
+
+A `Queue` represents elements waiting to be processed. Many queues use FIFO (first in, first out), but ordering depends on the implementation. The `offer`, `poll`, and `peek` methods are often preferable when a full queue or empty queue should be reported with a return value rather than an exception.
+
+| Implementation  | Main characteristics                                                                                                                                |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PriorityQueue` | Head is selected by natural ordering or a `Comparator`; iteration is **not** a globally sorted traversal. Does not permit `null`.                   |
+| `ArrayDeque`    | Resizable array implementation of `Deque`; supports adding/removing at both ends and is often a good queue or stack choice. Does not permit `null`. |
+| `LinkedList`    | Also implements `Deque`; can be used for queue/deque operations as well as list operations.                                                         |
+
+`Deque` (pronounced “deck”) is a double-ended queue. Add and remove at either end with methods such as `addFirst`, `addLast`, `removeFirst`, `removeLast`, `offerFirst`, and `pollLast`.
+
+```java
+Deque<String> tasks = new ArrayDeque<>();
+tasks.addLast("compile");
+tasks.addLast("test");
+String nextTask = tasks.removeFirst(); // FIFO queue use
+
+Deque<Integer> stack = new ArrayDeque<>();
+stack.push(10);
+stack.push(20);
+int top = stack.pop();                // LIFO stack use
+```
+
+### Comparable
+
+java.lang
+
+The Comparable interface in Java is used to define the natural ordering of objects of a class. It enables objects to be compared and sorted automatically without using an external Comparator.
+
+It contains the compareTo() method, which compares the current object with another object.
+It is commonly used with Collections.sort() and Arrays.sort() for sorting custom objects.
+
+Student implements Comparable<Student> and overrides compareTo() to define the sorting logic.
+compareTo() returns a negative, zero, or positive value to indicate order.
+Collections.sort(students) sorts the list automatically using the natural order defined in compareTo().
+Output shows the students sorted by ID in ascending order.
+
+- `Comparable<T>` is implemented by the type being ordered and defines its natural ordering through `compareTo(T)`. It is appropriate when a class has one natural ordering.
+
+### Comparator
+
+- `Comparator<T>` is supplied separately and defines an ordering through `compare(T, T)`. It allows multiple orderings without changing the class.
+
+```java
+List<String> sortedNames = new ArrayList<>(List.of("Mia", "Ava", "Noah"));
+Collections.sort(sortedNames);        // Natural String order
+sortedNames.sort(Comparator.comparingInt(String::length)
+                           .thenComparing(Comparator.naturalOrder()));
+```
+
+`Comparator`'s primary comparison method is `compare`; `equals` is inherited from `Object` and is not the method used to order items. `Collections.sort(list)` sorts by natural order, while `Collections.sort(list, comparator)` uses the provided comparator. `List.sort(comparator)` is another option.
+
+Choose a collection based on the operations and ordering you need:
+
+| Need                                           | Common choice   |
+| ---------------------------------------------- | --------------- |
+| Indexed resizable sequence, duplicates allowed | `ArrayList`     |
+| Unique values, no ordering requirement         | `HashSet`       |
+| Unique values, insertion order                 | `LinkedHashSet` |
+| Unique values, sorted order/range queries      | `TreeSet`       |
+| Key-value lookup                               | `HashMap`       |
+| Key-value lookup with insertion order          | `LinkedHashMap` |
+| Key-value lookup with sorted keys              | `TreeMap`       |
+| FIFO work queue / double-ended queue / stack   | `ArrayDeque`    |
+| Priority-based processing                      | `PriorityQueue` |
+
+Use the interface type on the left and an implementation on the right (`List<String> names = new ArrayList<>();`). This makes it easier to change implementations. `Map` is part of the framework but does not extend `Collection`. Collection implementations differ in ordering, null handling, complexity, and thread-safety.
+
+Big-O describes how work grows with input size: for example, array indexed access is O(1), while scanning an unsorted array is O(n). Hash collections typically offer expected O(1) lookup, but this is not an unconditional worst-case guarantee. Trees typically offer O(log n) operations. Choose based on actual access patterns, not slogans.
+
+- Know whether order, uniqueness, index access, or key lookup is required.
+- Use `equals`/`hashCode` correctly for hash collections and a consistent `compareTo`/`Comparator` for sorted collections.
+- Avoid modifying a collection structurally while iterating unless using the iterator's supported removal or a suitable concurrent collection.
+- Use a concurrent collection rather than assuming a regular collection is thread-safe.
+
+## Exceptions
+
+An exception represents an abnormal condition that interrupts normal control flow. Checked exceptions (subclasses of `Exception` other than `RuntimeException`) must be caught or declared; unchecked exceptions include `RuntimeException` and `Error` subclasses. `try` / `catch` handles exceptions, `finally` is generally used for cleanup, and try-with-resources is preferred for `AutoCloseable` resources.
+
+- `throw` throws a particular exception object.
+- `throws` declares possible exceptions in a method signature.
+- Multiple `catch` clauses can handle different exception types; order more-specific types before broader types.
+- `Throwable` is the root type for exceptions and errors. Applications should not ordinarily catch `Error`.
+
+`finally` normally runs whether or not an exception was caught, but it is not guaranteed during abrupt JVM/process termination or a system failure. Prefer try-with-resources for closing files and other resources. `finalize()` is deprecated for removal and is not a reliable cleanup mechanism; use `AutoCloseable`, try-with-resources, or carefully designed cleaners instead.
+
+• **Error**: Severe system-level crises (like OutOfMemoryError or StackOverflowError) [•]. Your program cannot catch or recover from these.
+• _Exception (Checked Exceptions)_: Errors that the compiler forces you to handle before it allows compilation (e.g., IOException, FileNotFoundException).
+• _RuntimeException (Unchecked Exceptions)_: Errors caused by bad programming logic (e.g., NullPointerException, ArrayIndexOutOfBoundsException). The compiler does not check for these; they appear dynamically at runtime.
+
+### Exception
+
+An exception represents an exceptional condition and transfers control away from the normal path.
+
+- **Checked exceptions** must be caught or declared
+- **unchecked exceptions** (`RuntimeException` and its subclasses) often indicate invalid arguments or programming errors. `Error` represents serious JVM or environment problems and is not ordinarily caught by application code.
+
+```java
+static int parsePositive(String text) {
+    int value = Integer.parseInt(text); // May throw NumberFormatException
+    if (value <= 0) {
+        throw new IllegalArgumentException("Value must be positive");
+    }
+    return value;
+}
+```
+
+### Exception Handling
+
+`try` contains code that may fail; `catch` handles a specific exception; `finally` is for cleanup that must run in ordinary completion paths. Try-with-resources closes `AutoCloseable` resources reliably, including when an exception occurs.
+
+• catch: Intercepts and handles a specific exception if it occurs inside the matching try block.
+• finally: A block that always executes, regardless of whether an exception was thrown or caught. Used to close files or connections.
+• throw: Explicitly throws a specific exception manually.
+• throws: Declared in a method signature to warn callers that this method might throw an exception.
+
+```java
+try (BufferedReader reader = Files.newBufferedReader(path)) {
+    return reader.readLine();
+} catch (IOException e) {
+    throw new UncheckedIOException("Could not read " + path, e);
+}
+```
+
+Use `throw` to raise an exception object and `throws` to declare exceptions a method may pass to its caller. Custom exceptions are useful when they communicate a meaningful domain failure, not just to rename every error.
+
+- Catch exceptions only when you can handle them, add useful context, or translate them at a boundary.
+- Do not swallow exceptions or catch `Exception`/`Throwable` broadly without a deliberate reason.
+- Preserve the cause when wrapping an exception.
+- Use try-with-resources for files, streams, sockets, and other closeable resources.
+- Validate input at system boundaries and fail with clear messages.
+
+### Try with resources
+
+Since Java 7, you can use try-with-resources. It is a special form of try that works with resources (like files and streams). The resource is declared inside parentheses try(...), and Java will close it automatically when the block finishes - even if an error occurs.
+
+## Streams
+
+A **stream** is a pipeline for processing data from a source. Intermediate operations (such as `filter`, `map`, and `sorted`) are lazy; a terminal operation (such as `toList`, `collect`, `count`, or `forEach`) triggers processing. A stream is normally consumed once.
+
+```java
+List<String> longNames = names.stream()
+        .filter(name -> name.length() >= 5)
+        .map(String::toUpperCase)
+        .sorted()
+        .toList(); // Unmodifiable result on modern Java
+```
+
+Use streams when the transformation pipeline becomes clearer than an explicit loop. Avoid side effects in stream operations, especially parallel streams. Parallel execution is not automatically faster and is usually inappropriate for tiny tasks or shared mutable state.
+
+`Optional<T>` represents a value that may be absent and is most useful as a return type when absence is a normal outcome. It is not a universal replacement for every nullable field or parameter.
+
+```java
+String displayName = findName(userId)
+        .filter(name -> !name.isBlank())
+        .orElse("Guest");
+```
+
+The first two lists are separate views copied at iteration time, so do not rely on matching positions to preserve key-value pairs; use the entry list when the relationship matters. In Java 8+, streams can also collect map views into a specific collection:
+
+```java
+ArrayList<String> keyList = scores.keySet().stream()
+        .collect(Collectors.toCollection(ArrayList::new));
+ArrayList<Integer> valueList = scores.values().stream()
+        .collect(Collectors.toCollection(ArrayList::new));
+```
+
+**Remember when coding**
+
+- Always include a terminal operation if you expect a stream pipeline to execute.
+- Avoid `peek` for essential program behavior; it is mainly useful for debugging.
+- Prefer `orElseGet` when the fallback is expensive and should be computed only when absent.
+- Do not call `get()` on an Optional without first establishing that a value exists.
 
 ## Records
 
@@ -1912,7 +2701,7 @@ An immutable object cannot have its observable state changed after construction.
 - Do not assume hash codes are unique identifiers.
 - Prefer immutable value objects when practical.
 
-### Generics
+## Generics
 
 Generics let classes, interfaces, and methods work with types while preserving compile-time checking. `List<String>` describes a list whose elements are strings; it avoids unsafe casts when retrieving elements. Java generics use type erasure for most runtime behavior.
 
@@ -1949,212 +2738,6 @@ static void copy(List<? extends Number> source,
 - Use wildcards at API boundaries when they make a method more flexible.
 - Generic types are invariant; do not expect `List<Child>` to assign to `List<Parent>`.
 
-## Collections and data structures
-
-The `Java Collections Framework` provides a set of interfaces (like List, Set, and Map) and a set of classes (ArrayList, HashSet, HashMap, etc.) that implement those interfaces.
-
-All of these are part of the `java.util` package.
-
-They are used to store, search, sort, and organize data more easily - all using standardized methods and patterns.
-
-### Big 3 types of collection
-
-1. List - ArrayList, LinkedList
-2. Set - HashSet, TreeSet, LinkedHashSet
-3. Map - HashMap, TreeMap, LinkedHashMap
-
-The Java Collections Framework provides a set of interfaces (like List, Set, and Map) and a set of classes (ArrayList, HashSet, HashMap, etc.) that implement those interfaces.
-
-### List Interface
-
-- add() Adds an element to the end of the list
-- get() Returns the element at the specified position
-- set() Replaces the element at the specified position
-- remove() Removes the element at the specified position
-- size() Returns the number of elements in the list
-
-#### ArrayList
-
-#### LinkedList
-
-The LinkedList class is a collection which can contain many objects of the same type, just like the ArrayList.
-
-The LinkedList class has the same methods as ArrayList because both follow the List interface. This means you can add, change, remove, or clear elements in a LinkedList just like you would with an ArrayList.
-
-However, while the ArrayList class and the LinkedList class can be used in the same way, they are built very differently.
-
-How the ArrayList works
-The ArrayList class has a regular array inside it. When an element is added, it is placed into the array. If the array is not big enough, a new, larger array is created to replace the old one and the old one is removed.
-
-How the LinkedList works
-The LinkedList stores its elements in "containers." The list has a link to the first container and each container has a link to the next container in the list. To add an element to the list, the element is placed into a new container and that container is linked to one of the other containers in the list.
-Another useful class in the java.util package is the Collections class, which include the sort() method for sorting lists alphabetically or numerically.
-
-Use an ArrayList for storing and accessing data, and LinkedList to manipulate data.
-
-- addFirst() Adds an element to the beginning of the list
-- addLast() Add an element to the end of the list
-- removeFirst() Remove an element from the beginning of the list
-- removeLast() Remove an element from the end of the list
-- getFirst() Get the element at the beginning of the list
-- getLast() Get the element at the end of the list
-
-### Set Interface
-
-The Set interface is part of the Java Collections Framework and is used to store a collection of unique elements.
-
-Unlike a List, a Set does not allow duplicates, and it does not preserve the order of elements (unless you're using TreeSet or LinkedHashSet).
-
-Common classes that implement Set:
-
-HashSet - fast and unordered
-TreeSet - sorted set
-LinkedHashSet - ordered by insertion
-
-- add() Adds an element if it's not already in the set
-- remove() Removes the element from the set
-- contains() Checks if the set contains the element
-- size() Returns the number of elements
-- clear() Removes all elements
-
-#### HashSet
-
-A HashSet is a collection of elements where every element is unique.
-
-It is part of the java.util package and implements the Set interface.
-
-#### TreeSet
-
-A TreeSet is a collection that stores unique elements in sorted order.
-
-It is part of the java.util package and implements the Set interface.
-
-Tip: Unlike HashSet, which has no order, TreeSet keeps its elements sorted automatically.
-
-#### LinkedHashSet
-
-A LinkedHashSet is a collection that stores unique elements and remembers the order they were added.
-
-### Map interface
-
-The Map interface is a part of the Java Collections Framework and is used to store key-value pairs. Each key must be unique, but values can be duplicated.
-
-A Map is useful when you want to associate a key (like a name or ID) with a value (like an age or description).
-
-Common classes that implement Map:
-
-HashMap - fast and unordered
-TreeMap - sorted by key
-LinkedHashMap - ordered by insertion
-Tip: Use a Map when you want to associate values with unique keys, like storing user IDs with names.
-
-- put() Adds or updates a key-value pair
-- get() Returns the value for a given key
-- remove() Removes the key and its value
-- containsKey() Checks if the map contains the key
-- keySet() Returns a set of all keys
-
-#### HashMap
-
-A HashMap stores items in key/value pairs, where each key maps to a specific value.
-
-It is part of the java.util package and implements the Map interface.
-
-Instead of accessing elements by an index (like with ArrayList), you use a key to retrieve its associated value.
-
-A HashMap can store many different combinations, such as:
-
-String keys and Integer values
-String keys and String values
-
-#### TreeMap
-
-A TreeMap is a collection that stores key/value pairs in sorted order by key.
-TreeMap vs HashMap
-Feature HashMap TreeMap
-Order No guaranteed order Sorted by keys
-Null Keys Allows one null key Does not allow null keys
-Performance Faster (no sorting) Slower (maintains sorted order)
-
-#### LinkedHashMap
-
-A LinkedHashMap stores keys and values, and keeps them in the same order you put them in.
-
-Choose a collection based on the operations and ordering you need:
-
-| Need                                           | Common choice   |
-| ---------------------------------------------- | --------------- |
-| Indexed resizable sequence, duplicates allowed | `ArrayList`     |
-| Unique values, no ordering requirement         | `HashSet`       |
-| Unique values, insertion order                 | `LinkedHashSet` |
-| Unique values, sorted order/range queries      | `TreeSet`       |
-| Key-value lookup                               | `HashMap`       |
-| Key-value lookup with insertion order          | `LinkedHashMap` |
-| Key-value lookup with sorted keys              | `TreeMap`       |
-| FIFO work queue / double-ended queue / stack   | `ArrayDeque`    |
-| Priority-based processing                      | `PriorityQueue` |
-
-Use the interface type on the left and an implementation on the right (`List<String> names = new ArrayList<>();`). This makes it easier to change implementations. `Map` is part of the framework but does not extend `Collection`. Collection implementations differ in ordering, null handling, complexity, and thread-safety.
-
-Big-O describes how work grows with input size: for example, array indexed access is O(1), while scanning an unsorted array is O(n). Hash collections typically offer expected O(1) lookup, but this is not an unconditional worst-case guarantee. Trees typically offer O(log n) operations. Choose based on actual access patterns, not slogans.
-
-- Know whether order, uniqueness, index access, or key lookup is required.
-- Use `equals`/`hashCode` correctly for hash collections and a consistent `compareTo`/`Comparator` for sorted collections.
-- Avoid modifying a collection structurally while iterating unless using the iterator's supported removal or a suitable concurrent collection.
-- Use a concurrent collection rather than assuming a regular collection is thread-safe.
-
-## Exceptions
-
-• **Error**: Severe system-level crises (like OutOfMemoryError or StackOverflowError) [•]. Your program cannot catch or recover from these.
-• _Exception (Checked Exceptions)_: Errors that the compiler forces you to handle before it allows compilation (e.g., IOException, FileNotFoundException).
-• _RuntimeException (Unchecked Exceptions)_: Errors caused by bad programming logic (e.g., NullPointerException, ArrayIndexOutOfBoundsException). The compiler does not check for these; they appear dynamically at runtime.
-
-### Exception
-
-An exception represents an exceptional condition and transfers control away from the normal path.
-
-- **Checked exceptions** must be caught or declared
-- **unchecked exceptions** (`RuntimeException` and its subclasses) often indicate invalid arguments or programming errors. `Error` represents serious JVM or environment problems and is not ordinarily caught by application code.
-
-```java
-static int parsePositive(String text) {
-    int value = Integer.parseInt(text); // May throw NumberFormatException
-    if (value <= 0) {
-        throw new IllegalArgumentException("Value must be positive");
-    }
-    return value;
-}
-```
-
-### Exception Handling
-
-`try` contains code that may fail; `catch` handles a specific exception; `finally` is for cleanup that must run in ordinary completion paths. Try-with-resources closes `AutoCloseable` resources reliably, including when an exception occurs.
-
-• catch: Intercepts and handles a specific exception if it occurs inside the matching try block.
-• finally: A block that always executes, regardless of whether an exception was thrown or caught. Used to close files or connections.
-• throw: Explicitly throws a specific exception manually.
-• throws: Declared in a method signature to warn callers that this method might throw an exception.
-
-```java
-try (BufferedReader reader = Files.newBufferedReader(path)) {
-    return reader.readLine();
-} catch (IOException e) {
-    throw new UncheckedIOException("Could not read " + path, e);
-}
-```
-
-Use `throw` to raise an exception object and `throws` to declare exceptions a method may pass to its caller. Custom exceptions are useful when they communicate a meaningful domain failure, not just to rename every error.
-
-- Catch exceptions only when you can handle them, add useful context, or translate them at a boundary.
-- Do not swallow exceptions or catch `Exception`/`Throwable` broadly without a deliberate reason.
-- Preserve the cause when wrapping an exception.
-- Use try-with-resources for files, streams, sockets, and other closeable resources.
-- Validate input at system boundaries and fail with clear messages.
-
-### Try with resources
-
-Since Java 7, you can use try-with-resources. It is a special form of try that works with resources (like files and streams). The resource is declared inside parentheses try(...), and Java will close it automatically when the block finishes - even if an error occurs.
-
 ## Lambdas and functional interfaces
 
 A functional interface has one abstract method and can be implemented by a lambda expression. Lambdas pass behavior as a value and are commonly used with collections, callbacks, and asynchronous APIs.
@@ -2173,35 +2756,6 @@ Common interfaces in `java.util.function` include `Predicate<T>` (test), `Functi
 - Captured local variables must be final or effectively final.
 - Name a complex behavior as a method instead of embedding a long lambda.
 - Know whether a callback may run immediately, later, or concurrently.
-
-## Streams and Optional
-
-A **stream** is a pipeline for processing data from a source. Intermediate operations (such as `filter`, `map`, and `sorted`) are lazy; a terminal operation (such as `toList`, `collect`, `count`, or `forEach`) triggers processing. A stream is normally consumed once.
-
-```java
-List<String> longNames = names.stream()
-        .filter(name -> name.length() >= 5)
-        .map(String::toUpperCase)
-        .sorted()
-        .toList(); // Unmodifiable result on modern Java
-```
-
-Use streams when the transformation pipeline becomes clearer than an explicit loop. Avoid side effects in stream operations, especially parallel streams. Parallel execution is not automatically faster and is usually inappropriate for tiny tasks or shared mutable state.
-
-`Optional<T>` represents a value that may be absent and is most useful as a return type when absence is a normal outcome. It is not a universal replacement for every nullable field or parameter.
-
-```java
-String displayName = findName(userId)
-        .filter(name -> !name.isBlank())
-        .orElse("Guest");
-```
-
-**Remember when coding**
-
-- Always include a terminal operation if you expect a stream pipeline to execute.
-- Avoid `peek` for essential program behavior; it is mainly useful for debugging.
-- Prefer `orElseGet` when the fallback is expensive and should be computed only when absent.
-- Do not call `get()` on an Optional without first establishing that a value exists.
 
 ### Files, I/O, and serialization
 
@@ -2285,6 +2839,11 @@ System.out.println(cric1.score);
 Garbage collection reclaims objects that are no longer reachable; it does not guarantee immediate cleanup or close external resources. A memory leak can still occur when code accidentally keeps references to objects it no longer needs (for example, in an unbounded cache or a static collection).
 
 Performance work should start with measurement. Big-O helps reason about algorithm growth; a profiler helps find real CPU or allocation bottlenecks. Avoid premature micro-optimization.
+The JVM manages memory automatically. The **heap** primarily holds objects and arrays; **thread stacks** hold method frames, local execution state, and references as part of the conceptual model. Exact physical placement is JVM-implementation-specific: Java does not guarantee that a reference is a literal memory address or that every local variable is physically stored on a thread stack. Java also does not expose general pointer arithmetic.
+
+A **deadlock** can occur when threads wait forever for locks held by each other. For example, thread A holds lock 1 while waiting for lock 2, and thread B holds lock 2 while waiting for lock 1. Consistent lock ordering and minimizing nested locks help reduce the risk.
+
+Threads can be created directly, but application code commonly uses `ExecutorService` and related concurrency APIs. Calling `Thread.start()` schedules a new thread of execution; calling `run()` directly is an ordinary method call on the current thread. Overriding `start()` is generally a mistake because it can prevent the normal thread-start behavior. Use synchronization, locks, or concurrency utilities to coordinate shared mutable state.
 
 **Remember when coding**
 
@@ -2578,513 +3137,11 @@ Before considering a topic learned, check that you can answer:
 
 ---
 
-### Index
+---
 
-- [Java, the JVM, and the toolchain](#java-the-jvm-and-the-toolchain)
-- [Variables, types, casting, and operators](#variables-types-casting-and-operators)
-- [Control flow and program entry point](#control-flow-and-program-entry-point)
-- [Classes, objects, and object creation](#classes-objects-and-object-creation)
-- [Methods, constructors, and initialization](#methods-constructors-and-initialization)
-- [Static members and class loading](#static-members-and-class-loading)
-- [Inheritance and polymorphism](#inheritance-and-polymorphism)
-- [Abstraction, interfaces, and encapsulation](#abstraction-interfaces-and-encapsulation)
-- [Access and non-access modifiers](#access-and-non-access-modifiers)
-- [Strings, equality, and wrapper classes](#strings-equality-and-wrapper-classes)
-- [Exceptions, memory, and concurrency](#exceptions-memory-and-concurrency)
-- [Relationships between objects](#relationships-between-objects)
-- [Java I/O](#java-io)
-- [Java Collections Framework](#java-collections-framework)
+---
 
-### Java, the JVM, and the toolchain
-
-Java is a general-purpose, class-based, object-oriented language with garbage collection, exception handling, and built-in concurrency support. Java source code is compiled to **bytecode**. A Java Virtual Machine (JVM) for a particular platform loads and verifies that bytecode, then interprets it and/or compiles frequently used code to native machine code. This is the basis of Java's portability: the same bytecode can run on compatible JVM implementations for different platforms.
-
-```text
-Hello.java --javac--> Hello.class (bytecode) --JVM--> program execution
-```
-
-The **JIT (Just-In-Time) compiler** is part of many JVM implementations. It can compile frequently executed bytecode to native machine code at runtime to improve performance; it does not normally produce a `.obj` file as a required stage.
-
-| Term      | Meaning                                                                                                                                                                                                                   |
-| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| JVM       | The virtual machine that loads and executes Java bytecode. The implementation is platform-specific.                                                                                                                       |
-| JRE       | The runtime components needed to run Java applications, including a JVM and libraries. Historically distributed separately; modern Java distributions commonly package runtime use through a JDK or custom runtime image. |
-| JDK       | Development kit containing tools such as `javac`, `java`, `javadoc`, and `jar`, plus runtime components.                                                                                                                  |
-| `javac`   | Compiles Java source files into class files.                                                                                                                                                                              |
-| `java`    | Launches a Java application on a JVM.                                                                                                                                                                                     |
-| `javadoc` | Generates API documentation from source and documentation comments.                                                                                                                                                       |
-| `jar`     | Creates and manages Java archive files.                                                                                                                                                                                   |
-
-Java is often called a **compiled and interpreted** language: compilation produces bytecode, and a JVM executes it using interpretation and, commonly, runtime compilation. The phrase _write once, run anywhere_ describes the goal, provided a compatible Java runtime and required platform dependencies are available.
-
-The traditional Java editions include Java SE (the core platform), Java EE (now Jakarta EE, for enterprise application specifications), and Java ME (for constrained devices). JavaFX is a UI framework/platform, not a JDK edition. "Core Java" is an informal term rather than a separate language subset.
-
-Java is used for server-side and enterprise applications, Android development (with Android-specific tooling and runtime), distributed systems, embedded software, games, and data-processing platforms. A common application structure separates responsibilities into controller, service, and data-access (DAO/repository) layers; frameworks and project needs determine the exact architecture.
-
-JDK directory layouts vary by vendor and version. In a typical installation, `bin` contains executable tools and `lib` contains runtime and tool libraries. Do not rely on a fixed list of directories across all JDKs.
-
-#### Java and object-oriented programming
-
-Java supports classes, objects, encapsulation, inheritance, and polymorphism, but it is not considered a _pure_ object-oriented language because it has primitive types and operations that are not performed through objects. Java does not support multiple inheritance of classes; a class can implement multiple interfaces.
-
-JavaScript is a separate language. It uses prototype-based inheritance and also has `class` syntax; describing it simply as a language with no inheritance is inaccurate.
-
-### Variables, types, casting, and operators
-
-A variable is a named storage location with a declared type. Its scope and lifetime depend on where it is declared:
-
-- **Local variable:** declared in a method, constructor, or block. It must be assigned before use and has no automatic default value.
-- **Instance field:** belongs to an object. Each object has its own instance fields; fields receive default values when the object is created.
-- **Static field (class variable):** belongs to the class and is shared by its instances; it is initialized as part of class initialization.
-
-#### Data types
-
-Java has eight primitive types: `byte`, `short`, `int`, `long`, `float`, `double`, `char`, and `boolean`. Reference types include classes, interfaces, arrays, and enums.
-
-| Primitive | Typical width / note                                                                                           |
-| --------- | -------------------------------------------------------------------------------------------------------------- |
-| `byte`    | 8-bit signed integer                                                                                           |
-| `short`   | 16-bit signed integer                                                                                          |
-| `int`     | 32-bit signed integer                                                                                          |
-| `long`    | 64-bit signed integer                                                                                          |
-| `float`   | 32-bit IEEE 754 floating-point                                                                                 |
-| `double`  | 64-bit IEEE 754 floating-point                                                                                 |
-| `char`    | 16-bit UTF-16 code unit; not necessarily a whole Unicode code point                                            |
-| `boolean` | Represents `true` or `false`; its storage size is not specified as a fixed number of bits by the Java language |
-
-Fields and array elements get default values, such as numeric zero, `false`, `'\u0000'`, or `null` for references. Local variables do not: the compiler requires definite assignment before they are read.
-
-#### Type casting
-
-**Widening** conversions are generally implicit when converting to a type that can represent the source value's range (for example, `int` to `long`). **Narrowing** conversions require an explicit cast and may lose information (for example, `double` to `int`):
-
-```java
-int count = 12;
-long largerCount = count;       // Widening
-
-double price = 9.99;
-int wholePrice = (int) price;   // Narrowing: fractional part is discarded
-```
-
-The common numeric widening sequence is `byte -> short -> int -> long -> float -> double`; `char` can widen to `int`, but `short` does not widen to `char`. Casting among primitive types follows specific language conversion rules, not one simple reversible chain.
-
-#### Operators
-
-- **Arithmetic:** `+`, `-`, `*`, `/`, `%`
-- **Unary:** `+`, `-`, `++`, `--`, `!`, `~`
-- **Shift:** `<<`, `>>` (sign-extending right shift), `>>>` (zero-filling right shift)
-- **Relational/equality:** `<`, `>`, `<=`, `>=`, `==`, `!=`
-- **Bitwise:** `&`, `|`, `^`, `~`
-- **Conditional logical:** `&&`, `||` (short-circuit)
-- **Ternary:** `condition ? valueIfTrue : valueIfFalse`
-- **Assignment and compound assignment:** `=`, `+=`, `-=`, `*=`, `/=`, `%=`, `&=`, `|=`, `^=`, `<<=`, `>>=`, `>>>=`
-
-The exact reserved-word list depends on the Java language version. Keywords are reserved by the language; contextual keywords have special meaning only in certain contexts.
-
-### Classes, objects, and object creation
-
-A **class** defines the state and behavior its objects can have; an **object** is a runtime instance of a class, with identity, state (fields), and behavior (methods). Common class descriptions include concrete, abstract, final, nested, POJO, and singleton. These are not six mutually exclusive language-level class types: for example, a class can be both final and a POJO.
-
-All ordinary classes ultimately inherit from `Object` unless they extend another class. Common `Object` methods include `toString()`, `equals(Object)`, `hashCode()`, `getClass()`, `clone()`, `wait()`, `notify()`, and `notifyAll()`.
-
-`compareTo()` is not an `Object` method; it is commonly supplied by `Comparable`.
-
-`finalize()` is deprecated for removal and should not be used for resource cleanup.
-
-Common ways to obtain or create an object include:
-
-1. The `new` operator and a constructor.
-2. Reflection, such as `Constructor.newInstance()` (the older `Class.newInstance()` API is deprecated).
-3. Cloning, when the class supports it.
-4. Deserialization of a serialized object.
-5. A factory method that returns a new or reused object.
-
-A factory method is a design approach that controls object creation, not a separate JVM allocation mechanism. A class can implement `Cloneable` and expose a suitable `clone()` method, but `Object.clone()` is a shallow-copy mechanism and cloning requires careful design. A `hashCode()` value is not a unique object ID.
-
-**Serialization** converts an object's serializable state into a byte representation; **deserialization** reconstructs an object from that representation. With Java object serialization, classes commonly implement `Serializable`, and object streams provide methods such as `writeObject()` and `readObject()`. Deserializing untrusted data is unsafe; prefer safer, explicitly defined data formats for external input.
-
-The `transient` modifier excludes an instance field from default Java serialization. After deserialization, such a field has its default value unless restored separately. Static fields are class state rather than per-object serialized state, and `final` fields have additional serialization constraints; applying `transient` to these does not make them useful serialized state.
-
-A `singleton` is a design pattern intended to provide one shared instance within a defined scope. A private constructor plus a static accessor is one approach, but thread safety, serialization, class loaders, and testing also matter. An enum singleton is a robust option in many cases. `getInstance()` is a convention, not a required Java mechanism.
-
-An inner class is a non-static nested class and has an enclosing instance. A static nested class does not have an implicit enclosing instance:
-
-```java
-class Outer {
-    class Inner { }
-    static class Nested { }
-}
-
-Outer outer = new Outer();
-Outer.Inner inner = outer.new Inner();
-Outer.Nested nested = new Outer.Nested();
-```
-
-### Methods, constructors, and initialization
-
-A method is a named block of behavior. Methods may be instance or static, return a value or `void`, and accept parameters. Accessor methods commonly read state (often named `get...`); mutator methods commonly update it (often named `set...`). Abstract methods declare behavior without a body in an abstract class or interface.
-
-A **constructor** initializes a new object. It has the class name and no return type; it cannot explicitly return a value. A constructor is not a method that returns an object reference. If no constructor is declared, the compiler provides a no-argument default constructor; once any constructor is declared, that automatic constructor is not supplied.
-
-- A **no-argument constructor** has no parameters.
-- A **parameterized constructor** accepts values to initialize the object.
-- A **copy constructor** is a user-defined convention that initializes an object from another object of the same class.
-- A **private constructor** restricts construction from outside the class and is used in patterns such as utility classes or singletons.
-
-Constructors can be overloaded. Constructor chaining uses `this(...)` to call another constructor in the same class or `super(...)` to call a superclass constructor; such a call must be the first constructor statement in Java versions before Java 25. Constructors cannot be `static`, `final`, `abstract`, or `synchronized`.
-
-Instance initializer blocks and field initializers run as part of object initialization. For a new object, superclass initialization happens before subclass instance initialization; within a class, instance field initializers and initializer blocks run in source order before the constructor body. Static field initializers and static initializer blocks run as part of class initialization, generally once per class loader.
-
-### Static members and class loading
-
-`static` members belong to the class rather than an individual instance. A static method can be called using the class name and can directly access static members, but it has no `this` or `super` reference and cannot directly access instance members without an object. Static fields are shared class state, not a mechanism that guarantees one copy across all class loaders.
-
-Only a **nested** class can be declared `static`; a top-level class cannot. A static nested class has no implicit reference to an enclosing instance, but it can access enclosing class members subject to access rules.
-
-A **class loader** loads class definitions into the JVM when needed. The built-in loader hierarchy commonly includes the bootstrap, platform, and application class loaders; exact implementation details vary. Classes are not all loaded into memory at program start.
-
-Static methods are not overridden. If a subclass declares a compatible static method with the same signature, it hides the superclass method; method selection is based on the compile-time type. Static methods can still be overloaded with different parameter lists.
-
-### Inheritance and polymorphism
-
-Inheritance models an **is-a** relationship and allows a class to extend one superclass. Common forms include single, multilevel, and hierarchical class inheritance. Java does not allow a class to extend multiple classes, avoiding ambiguities such as the diamond problem; multiple interfaces can be implemented.
-
-**Polymorphism** lets one type of reference work with different implementations:
-
-- **Overloading** uses the same method name with different parameter lists. The compiler selects an overload using compile-time types. Changing only the return type does not create a valid overload.
-- **Overriding** supplies a compatible instance-method implementation in a subclass. The runtime object determines which overridden implementation runs. A static method is hidden, not overridden.
-
-```java
-class Animal {
-    void speak() { System.out.println("sound"); }
-}
-
-class Dog extends Animal {
-    @Override
-    void speak() { System.out.println("bark"); }
-}
-
-Animal pet = new Dog();
-pet.speak();                         // "bark": runtime dispatch
-```
-
-Private methods are not inherited as overridable methods; a same-named method in a subclass is a separate declaration. Static methods can be overloaded. A child method that overrides a parent method must follow Java's return-type, access, and exception compatibility rules.
-
-Upcasting (subclass object to a superclass reference) is implicit and safe. Downcasting (superclass reference to a subclass type) requires an explicit cast and is only valid when the object really has that subtype; otherwise it throws `ClassCastException`. Use `instanceof` (including pattern matching where supported) when a runtime type check is needed.
-
-### Abstraction, interfaces, and encapsulation
-
-**Abstraction** exposes essential behavior while hiding implementation details. An abstract class cannot be instantiated directly and may contain fields, constructors, abstract methods, and implemented methods. A concrete subclass must implement inherited abstract methods unless it is itself abstract.
-
-An **interface** defines a contract that classes can implement. A class can implement multiple interfaces, and an interface can extend multiple interfaces. Interfaces can contain constants, abstract methods, and (in modern Java) default, static, and private methods. Interface fields are implicitly `public static final`; ordinary abstract interface methods are implicitly `public abstract`. Interfaces do not have constructors or per-instance fields.
-
-Neither interfaces nor abstract classes are universally "fully" or "partially" abstract; choose based on whether you need a shared class implementation/state or a contract that multiple classes can implement.
-
-`Serializable` and `Cloneable` are marker interfaces: they declare no methods and communicate a capability or signal to Java APIs. Implementing `Cloneable` permits the protected `Object.clone()` mechanism to make a shallow copy; it does not automatically provide a public clone method.
-
-**Encapsulation** groups state and behavior and controls access to state. Private fields with carefully designed methods are common, but getters and setters are not mandatory for every field; validation and invariants should remain part of the design.
-
-### Strings, equality, and wrapper classes
-
-`String` is an immutable object. String literals are interned in the string pool, and `String` provides methods such as `charAt`, `equals`, and `compareTo`.
-
-```java
-String text = "Hello";
-String updated = text.concat(" Java");  // text is still "Hello"
-```
-
-Use `StringBuilder` for repeated mutable string construction in a single thread. `StringBuffer` is also mutable and synchronizes its methods, which can add overhead; synchronization does not automatically make a larger sequence of operations atomic.
-
-- `==` compares primitive values, or reference identity when used with references.
-- `equals()` compares logical equality when a class implements it appropriately.
-- If `equals()` is overridden, `hashCode()` must be implemented consistently.
-- `compareTo()` (from `Comparable`) orders values and conventionally returns a negative number, zero, or a positive number.
-
-Eight wrapper classes correspond to the primitive types: `Byte`, `Short`, `Integer`, `Long`, `Float`, `Double`, `Character`, and `Boolean`. Wrappers let primitive values participate in APIs that work with objects, such as generics. Autoboxing and unboxing convert between primitives and their wrappers:
-
-```java
-Integer boxed = 7;          // Autoboxing
-int primitive = boxed;      // Unboxing
-```
-
-Unboxing a `null` wrapper throws `NullPointerException`. Prefer `valueOf(...)` or autoboxing rather than wrapper constructors, which are deprecated in modern Java.
-
-### Exceptions, memory, and concurrency
-
-An exception represents an abnormal condition that interrupts normal control flow. Checked exceptions (subclasses of `Exception` other than `RuntimeException`) must be caught or declared; unchecked exceptions include `RuntimeException` and `Error` subclasses. `try` / `catch` handles exceptions, `finally` is generally used for cleanup, and try-with-resources is preferred for `AutoCloseable` resources.
-
-- `throw` throws a particular exception object.
-- `throws` declares possible exceptions in a method signature.
-- Multiple `catch` clauses can handle different exception types; order more-specific types before broader types.
-- `Throwable` is the root type for exceptions and errors. Applications should not ordinarily catch `Error`.
-
-`finally` normally runs whether or not an exception was caught, but it is not guaranteed during abrupt JVM/process termination or a system failure. Prefer try-with-resources for closing files and other resources. `finalize()` is deprecated for removal and is not a reliable cleanup mechanism; use `AutoCloseable`, try-with-resources, or carefully designed cleaners instead.
-
-The JVM manages memory automatically. The **heap** primarily holds objects and arrays; **thread stacks** hold method frames, local execution state, and references as part of the conceptual model. Exact physical placement is JVM-implementation-specific: Java does not guarantee that a reference is a literal memory address or that every local variable is physically stored on a thread stack. Java also does not expose general pointer arithmetic.
-
-A **deadlock** can occur when threads wait forever for locks held by each other. For example, thread A holds lock 1 while waiting for lock 2, and thread B holds lock 2 while waiting for lock 1. Consistent lock ordering and minimizing nested locks help reduce the risk.
-
-Threads can be created directly, but application code commonly uses `ExecutorService` and related concurrency APIs. Calling `Thread.start()` schedules a new thread of execution; calling `run()` directly is an ordinary method call on the current thread. Overriding `start()` is generally a mistake because it can prevent the normal thread-start behavior. Use synchronization, locks, or concurrency utilities to coordinate shared mutable state.
-
-### Relationships between objects
-
-- **Association:** a general relationship in which objects know about or use one another. It may be one-to-one, one-to-many, many-to-one, or many-to-many.
-- **Aggregation:** a weaker whole-part relationship in which the parts can exist independently of the whole.
-- **Composition:** a stronger ownership relationship in which a part's lifecycle is closely tied to its owning whole.
-
-These terms describe design relationships; Java does not enforce their lifecycle semantics automatically.
-
-### Java I/O
-
-The `java.io` package provides stream-based I/O. A stream is a flow of data between a source and a destination:
-
-- **Byte streams:** `InputStream` and `OutputStream` and their subclasses are used for binary data.
-- **Character streams:** `Reader` and `Writer` and their subclasses handle text characters with character encoding.
-- **Standard streams:** `System.in` (input), `System.out` (normal output), and `System.err` (error output).
-
-Common examples include `FileInputStream` / `FileOutputStream` for bytes; `FileReader` / `FileWriter` for text; `BufferedInputStream`, `BufferedOutputStream`, `BufferedReader`, and `BufferedWriter` for buffering; `DataInputStream` / `DataOutputStream` for primitive data formats; and `ObjectInputStream` / `ObjectOutputStream` for Java object serialization. `InputStreamReader` and `OutputStreamWriter` bridge byte and character streams. `PrintStream` and `PrintWriter` provide convenient formatted and line-oriented output.
-
-`BufferedReader` can read text efficiently, including one line at a time. `Scanner` can tokenize and parse text into primitive values, which is convenient but often slower for large input. Select the API appropriate to the input format and performance needs.
-
-`File` represents a path and provides operations such as `exists()`, `isFile()`, `isDirectory()`, `getAbsolutePath()`, `list()`, `mkdir()`, and `createNewFile()`. `File` does not itself read or write file contents. Check operation results and handle `IOException` where applicable. For new code, `java.nio.file.Path` and `Files` often provide a more modern API.
-
-```java
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-Path path = Path.of("notes.txt");
-try (BufferedReader reader = Files.newBufferedReader(path)) {
-    String line;
-    while ((line = reader.readLine()) != null) {
-        System.out.println(line);
-    }
-} catch (IOException e) {
-    System.err.println("Could not read " + path + ": " + e.getMessage());
-}
-```
-
-`BufferedReader` wraps a `Reader`; `BufferedWriter` wraps a `Writer`. `PrintWriter` supports methods such as `print`, `println`, `printf`, and `format`. Always close I/O resources, preferably with try-with-resources.
-
-`Enumeration` is a legacy interface for traversing elements of some older collection APIs. It is distinct from the `enum` language feature, which defines a fixed set of named constants.
-
-### Java Collections Framework
-
-The Java Collections Framework is a set of interfaces, implementations, and algorithms for storing and working with groups of objects. Most core collection types and utilities are in `java.util`; concurrent implementations and interfaces are also available in `java.util.concurrent`.
-
-#### Framework overview and hierarchy
-
-`Iterable` is the root of the collection iteration model. Its `iterator()` method returns an `Iterator`, which provides `hasNext()`, `next()`, and (optionally) `remove()`. `Collection` extends `Iterable`; common subinterfaces are `List`, `Set`, and `Queue`. `Deque` extends `Queue`.
-
-`Map` is part of the Collections Framework, but **does not extend `Collection`**. It stores key-value mappings rather than a sequence of elements.
-
-```text
-Iterable
-└── Collection
-    ├── List
-    ├── Set
-    │   └── SortedSet / NavigableSet
-    └── Queue
-        └── Deque
-
-Map (separate from Collection)
-├── SortedMap / NavigableMap
-└── ConcurrentMap (in java.util.concurrent)
-```
-
-The `Collection` interface specifies common operations such as `add`, `remove`, `contains`, `size`, `isEmpty`, `iterator`, and `clear`. Not every implementation supports every optional modifying operation; an unsupported operation can throw `UnsupportedOperationException`.
-
-`Collections` (plural) is a utility class containing static methods such as `sort`, `reverse`, `shuffle`, `min`, `max`, `frequency`, `unmodifiableList`, and `synchronizedList`. It is different from the `Collection` interface (singular). `Arrays` provides utility methods for arrays, including `sort`, `binarySearch`, and `asList`.
-
-Collections store reference types, not primitive values. Use wrapper types such as `Integer` in generic collections; Java automatically boxes and unboxes primitive values when appropriate:
-
-```java
-List<Integer> numbers = new ArrayList<>();
-numbers.add(42);                      // int is boxed to Integer
-int answer = numbers.get(0);          // Integer is unboxed to int
-```
-
-#### List implementations
-
-A `List` is an ordered sequence with index-based access. Lists allow duplicates; some implementations also permit `null`.
-
-```java
-List<String> names = new ArrayList<>();
-names.add("Ava");
-names.add("Noah");
-names.add("Ava");                     // Duplicates are allowed
-System.out.println(names.get(0));     // Index 0
-```
-
-| Implementation | Main characteristics                                                                                                                                        |
-| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ArrayList`    | Resizable array; fast indexed access and usually efficient append; inserting/removing in the middle shifts later elements. Not synchronized by default.     |
-| `LinkedList`   | Doubly linked list; implements both `List` and `Deque`. Indexed access requires traversal, so it is usually not the best choice for frequent random access. |
-| `Vector`       | Legacy resizable array with synchronized individual methods. Synchronization does not make multi-step operations automatically atomic.                      |
-| `Stack`        | Legacy LIFO stack that extends `Vector`; prefer `Deque` (often `ArrayDeque`) for stack operations in new code.                                              |
-
-`ArrayList` grows as needed, but its exact capacity and growth policy are implementation details, not guarantees to rely on. `ArrayList<Integer>` contains `Integer` references, not primitive `int` storage.
-
-#### Queue and deque implementations
-
-A `Queue` represents elements waiting to be processed. Many queues use FIFO (first in, first out), but ordering depends on the implementation. The `offer`, `poll`, and `peek` methods are often preferable when a full queue or empty queue should be reported with a return value rather than an exception.
-
-| Implementation  | Main characteristics                                                                                                                                |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `PriorityQueue` | Head is selected by natural ordering or a `Comparator`; iteration is **not** a globally sorted traversal. Does not permit `null`.                   |
-| `ArrayDeque`    | Resizable array implementation of `Deque`; supports adding/removing at both ends and is often a good queue or stack choice. Does not permit `null`. |
-| `LinkedList`    | Also implements `Deque`; can be used for queue/deque operations as well as list operations.                                                         |
-
-`Deque` (pronounced “deck”) is a double-ended queue. Add and remove at either end with methods such as `addFirst`, `addLast`, `removeFirst`, `removeLast`, `offerFirst`, and `pollLast`.
-
-```java
-Deque<String> tasks = new ArrayDeque<>();
-tasks.addLast("compile");
-tasks.addLast("test");
-String nextTask = tasks.removeFirst(); // FIFO queue use
-
-Deque<Integer> stack = new ArrayDeque<>();
-stack.push(10);
-stack.push(20);
-int top = stack.pop();                // LIFO stack use
-```
-
-#### Set and sorted set implementations
-
-A `Set` does not contain duplicate elements, where duplicates are determined using equality for hash-based sets or ordering comparisons for sorted sets. Do not assume a general `Set` has a particular iteration order.
-
-| Implementation  | Main characteristics                                                                                                                                               |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `HashSet`       | Hash-table-based; expected fast basic operations; iteration order is unspecified; permits one `null`.                                                              |
-| `LinkedHashSet` | Hash-based set that preserves insertion order; permits one `null`.                                                                                                 |
-| `TreeSet`       | Tree-based `NavigableSet`; iterates in natural or comparator order and provides range/navigation operations. Usually does not permit `null` with natural ordering. |
-
-`SortedSet` maintains elements in sorted order; `NavigableSet` adds methods for finding nearest lower/higher elements and descending views. A `TreeSet` treats elements as duplicates when its comparison returns zero, so its comparator should be consistent with `equals` when possible.
-
-#### Map implementations
-
-A `Map<K, V>` maps unique keys to values. Values may repeat. A map can expose its keys with `keySet()`, its values with `values()`, and key-value pairs with `entrySet()`.
-
-| Implementation  | Main characteristics                                                                                |
-| --------------- | --------------------------------------------------------------------------------------------------- |
-| `HashMap`       | Hash-table-based map; iteration order is unspecified; permits one `null` key and `null` values.     |
-| `LinkedHashMap` | Preserves insertion order by default; can also be configured for access order.                      |
-| `TreeMap`       | Sorts keys using natural ordering or a `Comparator`; implements `NavigableMap`.                     |
-| `Hashtable`     | Legacy synchronized map; disallows `null` keys and values.                                          |
-| `Properties`    | Legacy configuration class, usually used for string property names and values; extends `Hashtable`. |
-
-`HashMap` uses hashing to locate entries. Correct hash-based behavior relies on the `equals`/`hashCode` contract: equal objects must have equal hash codes, and key fields used by `equals`/`hashCode` should not be changed while the object is being used as a map key or set element.
-
-`Map.Entry<K, V>` is a nested interface representing a key-value pair. Use `entrySet()` to process keys and values together:
-
-```java
-Map<String, Integer> ages = new HashMap<>();
-ages.put("Ava", 28);
-ages.put("Noah", 31);
-
-for (Map.Entry<String, Integer> entry : ages.entrySet()) {
-    System.out.println(entry.getKey() + ": " + entry.getValue());
-}
-```
-
-Avoid converting map keys and values into separate lists if the key-value association must be retained. Convert entries instead (the resulting entries remain map-entry objects, not independent key/value arrays):
-
-```java
-List<Map.Entry<String, Integer>> entries =
-        new ArrayList<>(ages.entrySet());
-```
-
-Legacy classes include `Vector`, `Stack`, `Hashtable`, `Dictionary`, and `Properties`. Some provide synchronized methods, but legacy status does not mean every operation is thread-safe as a whole. `Dictionary` is an older abstract class; prefer the `Map` API for new code. For concurrent maps, consider classes from `java.util.concurrent`, such as `ConcurrentHashMap`.
-
-#### Iteration, ordering, and utilities
-
-Use the enhanced `for` loop when you only need each element. Use an index loop when you need list indexes, or an `Iterator` when you need iterator-supported removal while traversing:
-
-```java
-List<String> languages = new ArrayList<>(List.of("Java", "Kotlin", "Scala"));
-
-for (String language : languages) {
-    System.out.println(language);
-}
-
-for (int i = 0; i < languages.size(); i++) {
-    System.out.println(i + ": " + languages.get(i));
-}
-
-Iterator<String> iterator = languages.iterator();
-while (iterator.hasNext()) {
-    if (iterator.next().equals("Kotlin")) {
-        iterator.remove();            // Safe removal through this iterator
-    }
-}
-```
-
-Calling a collection's `remove` method directly while iterating may cause `ConcurrentModificationException` for fail-fast iterators. Fail-fast behavior is best-effort bug detection, not a thread-safety guarantee. Use the iterator's `remove` when supported, or an appropriate concurrent collection for concurrent access.
-
-`Enumeration` is an older, read-only traversal API used by legacy classes. It has `hasMoreElements()` and `nextElement()`; it does not have `remove()`. `Iterator` instead has `hasNext()`, `next()`, and an optional `remove()`.
-
-Sorting can use either a type's natural order or a supplied comparator:
-
-- `Comparable<T>` is implemented by the type being ordered and defines its natural ordering through `compareTo(T)`. It is appropriate when a class has one natural ordering.
-- `Comparator<T>` is supplied separately and defines an ordering through `compare(T, T)`. It allows multiple orderings without changing the class.
-
-```java
-List<String> sortedNames = new ArrayList<>(List.of("Mia", "Ava", "Noah"));
-Collections.sort(sortedNames);        // Natural String order
-sortedNames.sort(Comparator.comparingInt(String::length)
-                           .thenComparing(Comparator.naturalOrder()));
-```
-
-`Comparator`'s primary comparison method is `compare`; `equals` is inherited from `Object` and is not the method used to order items. `Collections.sort(list)` sorts by natural order, while `Collections.sort(list, comparator)` uses the provided comparator. `List.sort(comparator)` is another option.
-
-To choose a random element from a non-empty list:
-
-```java
-List<String> choices = List.of("red", "green", "blue");
-String selected = choices.get(new Random().nextInt(choices.size()));
-```
-
-`nextInt(bound)` requires `bound > 0`, so check that the list is not empty first. For repeated selection, create and reuse a `Random` (or use `ThreadLocalRandom.current()` in concurrent contexts) rather than constructing one each time.
-
-#### Converting arrays, collections, and maps
-
-`addAll` adds every element from another collection. `Arrays.asList` creates a fixed-size list backed by the given reference-type array; changing an element through either view updates the other, but adding or removing elements is unsupported. Wrap it in an `ArrayList` when a resizable list is needed:
-
-```java
-List<Integer> fixedSize = Arrays.asList(1, 2, 3);
-List<Integer> resizable = new ArrayList<>(fixedSize);
-resizable.add(4);
-
-List<Integer> alsoResizable = new ArrayList<>();
-alsoResizable.addAll(fixedSize);
-```
-
-`List.of(...)` (Java 9+) creates an unmodifiable list and rejects `null`. When the source is a primitive array, such as `int[]`, `Arrays.asList(array)` produces a list containing that array as one element rather than a list of boxed integers. Use a loop or stream to convert primitive array elements.
-
-For a map, `keySet()` and `values()` give collection views, which can be copied into lists:
-
-```java
-Map<String, Integer> scores = new HashMap<>();
-scores.put("Ava", 95);
-scores.put("Noah", 88);
-
-List<String> keys = new ArrayList<>(scores.keySet());
-List<Integer> values = new ArrayList<>(scores.values());
-List<Map.Entry<String, Integer>> pairs =
-        new ArrayList<>(scores.entrySet());
-```
-
-The first two lists are separate views copied at iteration time, so do not rely on matching positions to preserve key-value pairs; use the entry list when the relationship matters. In Java 8+, streams can also collect map views into a specific collection:
-
-```java
-ArrayList<String> keyList = scores.keySet().stream()
-        .collect(Collectors.toCollection(ArrayList::new));
-ArrayList<Integer> valueList = scores.values().stream()
-        .collect(Collectors.toCollection(ArrayList::new));
-```
-
-Import the types used in these examples from `java.util` (and `java.util.stream.Collectors` for the stream examples).
+---
 
 ---
 
@@ -3405,5 +3462,411 @@ Would you like to see how to use an instanceof check to safely read and loop thr
 ---
 
 Elements in an ArrayList are actually objects. In the examples above, we created elements (objects) of type "String". Remember that a String in Java is an object (not a primitive type). To use other types, such as int, you must specify an equivalent wrapper class: Integer. For other primitive types, use: Boolean for boolean, Character for char, Double for double, etc:
+
+---
+
+Since you just learned that Java collections can only hold objects (and not primitive types like int or char), you have stumbled right into the exact reason Wrapper Classes exist!
+A Wrapper Class is a built-in Java class that wraps around a primitive data type, turning it into a full-fledged Object.
+
+The Primitive vs. Wrapper Matchup
+
+Every primitive type in Java has a corresponding Wrapper Class located in the java.lang package (which is imported automatically):
+
+Primitive Type (Basic Data) Wrapper Class (Object)
+int Integer
+char Character
+double Double
+boolean Boolean
+float Float
+byte / short / long Byte / Short / Long
+
+🔄 Autoboxing and Unboxing (The Magic Behind the Scenes)
+
+Java makes working with wrapper classes incredibly easy by automatically converting back and forth between primitives and objects.
+
+1. Autoboxing (Primitive ➔ Wrapper Object)
+
+When you assign a primitive value directly to a wrapper class variable, Java automatically "boxes" it into an object.
+java
+int primitiveInt = 5;
+Integer objectInt = primitiveInt; // Autoboxing happens here automatically!
+Use code with caution.
+Why this matters for Collections: This is exactly why you can write list.add(1) into a List<Integer>. Java automatically boxes the primitive 1 into an Integer object before saving it.
+
+2. Unboxing (Wrapper Object ➔ Primitive)
+
+When you assign a wrapper object back to a primitive variable, Java automatically extracts the value.
+java
+Integer objectInt = 25;
+int primitiveInt = objectInt; // Unboxing happens here automatically!
+Use code with caution.
+
+🛠️ Why Else Do We Need Wrapper Classes? (Utility Methods)
+
+Wrapper classes aren't just wrappers—they are packed with incredibly useful static methods to convert and manipulate data.
+
+1. Converting Strings to Numbers (Parsing)
+
+If you get a numeric value as text (like input from a text file or user interface), wrapper classes help you convert it:
+java
+String priceText = "499";
+int price = Integer.parseInt(priceText); // Converts String to int
+Use code with caution.
+
+2. Checking Character Properties
+
+The Character wrapper class has built-in tools to inspect letters and symbols:
+java
+char myChar = 'A';
+System.out.println(Character.isUpperCase(myChar)); // true
+System.out.println(Character.isDigit(myChar)); // false
+Use code with caution.
+
+3. Finding Data Limits
+
+Ever wonder what the biggest number an int can hold is? You can check using constants inside the wrapper:
+java
+System.out.println(Integer.MAX_VALUE); // 2147483647
+System.out.println(Integer.MIN_VALUE); // -2147483648
+Use code with caution.
+Would you like to see a quick code example showing how a NullPointerException can accidentally happen when trying to unbox a wrapper class that has a null value?
+
+---
+
+A terminal operation is the final step in a Java Stream pipeline [🏆].
+Think of a stream like a factory conveyor belt. Intermediate operations (like filter() and map()) change or clean the products on the belt, but a terminal operation is the worker at the very end of the line who packages everything up into a box, counts the total, or ships it out.
+Once a terminal operation is called, the stream is officially closed and cannot be reused.
+
+⚠️ The Golden Rule: Streams are Lazy
+
+If you don't add a terminal operation at the end of your stream pipeline, nothing happens. Java won't even execute your filters or maps.
+java
+// ❌ THIS DOES NOTHING (Missing terminal operation)
+list.stream().filter(n -> n > 5);
+
+// THIS WORKS (forEach is a terminal operation)
+list.stream().filter(n -> n > 5).forEach(System.out::println);
+Use code with caution.
+
+Common Terminal Operations Cheat Sheet
+
+Terminal operations generally fall into three common buckets depending on what they produce:
+
+1. Collecting Data (Turning it back into a Collection)
+
+• collect(Collectors.toList()): Packages the remaining elements into a fresh List or Set.
+• collect(Collectors.groupingBy(...)): Groups your items into a Map (like you did in the previous challenge).
+
+2. Looping & Side Effects
+
+• forEach(consumer): Iterates over every element one last time (usually to print them with System.out::println).
+
+3. Math & Aggregations (Reducing to a single value)
+
+• count(): Returns the total number of items left in the stream as a long.
+• reduce(...): Combines all elements into a single value (e.g., adding all numbers together).
+• average() / sum() / max(): Math utilities available on primitive streams (like IntStream).
+
+4. Matching & Searching (Short-circuit operations)
+
+• findFirst() / findAny(): Grabs a single element matching your criteria and wraps it in an Optional.
+• anyMatch(predicate): Returns true if at least one element matches your condition.
+
+How to spot them in code
+
+Look at the return type of the method.
+• If a method returns another Stream<T>, it is an intermediate operation.
+• If it returns anything else (like a List, a Map, a long, a boolean, or void), it is a terminal operation!
+Would you like to jump back to Problem 6 now and see how to flatten nested lists using flatMap, or do you want to write a quick stream that uses the reduce() terminal operation to calculate a factorial or sum?
+
+---
+
+Here is the complete, comprehensive guide to all terminal operations in the Java Streams API, organized by what they return.
+Remember, a terminal operation always closes the stream [🏆] and returns either a concrete value (like a List, long, boolean, or Optional) or void.
+
+📦 1. Collection & Packaging Operations (The collect Family)
+
+These gather the stream elements and bundle them into collections, structures, or strings.
+• collect(Collector): The most flexible terminal operation. It transforms the stream into collections like List, Set, or Map.java
+List<String> list = stream.collect(Collectors.toList());
+Set<String> set = stream.collect(Collectors.toSet());
+Use code with caution.
+• toArray(): Collects the elements of the stream into a classic, fixed-size Java array.java
+String[] array = stream.toArray(String[]::new);
+Use code with caution.
+
+🔍 2. Search & Find Operations
+
+These look for specific elements in the stream and return an Optional (because the matching element might not exist).
+• findFirst(): Returns an Optional containing the very first element in the stream.java
+Optional<String> first = stream.findFirst();
+Use code with caution.
+• findAny(): Returns an Optional containing any element from the stream. In parallel streams, this is much faster than findFirst() because it grabs whichever element finishes processing first.java
+Optional<String> any = stream.findAny();
+Use code with caution.
+
+📉 3. Reduction & Aggregation Operations
+
+These take a stream of multiple values and compress or combine them down into a single final value (like a sum, maximum, or total count).
+• reduce(accumulator): Combines elements using a custom binary operation (e.g., multiplying all numbers together or concatenating strings).java
+Optional<Integer> sum = stream.reduce((a, b) -> a + b);
+Use code with caution.
+• count(): Counts the total number of elements remaining in the stream and returns a long.java
+long total = stream.filter(x -> x > 10).count();
+Use code with caution.
+• min(Comparator): Finds the minimum element based on a sorting rule. Returns an Optional.java
+Optional<Integer> minVal = stream.min(Comparator.naturalOrder());
+Use code with caution.
+• max(Comparator): Finds the maximum element based on a sorting rule. Returns an Optional.java
+Optional<Integer> maxVal = stream.max(Comparator.naturalOrder());
+Use code with caution.
+💡 Special Numeric Reductions: If you convert your stream to a primitive stream (like IntStream, LongStream, or DoubleStream), you get access to three extra mathematical terminal operations out of the box:
+• sum(): Adds up all numeric elements (returns int, long, or double).
+• average(): Calculates the arithmetic mean (returns an OptionalDouble).
+• summaryStatistics(): Returns a special object containing the count, sum, min, max, and average all at once.
+
+🚦 4. Matching Operations (Short-Circuiting)
+
+These check the elements against a condition and immediately return a boolean. They "short-circuit," meaning they stop processing the stream the exact moment they know the final answer.
+• anyMatch(Predicate): Returns true if at least one element matches the condition.java
+boolean hasAdults = numbers.stream().anyMatch(age -> age >= 18);
+Use code with caution.
+• allMatch(Predicate): Returns true only if every single element matches the condition.java
+boolean allPassed = scores.stream().allMatch(score -> score >= 40);
+Use code with caution.
+• noneMatch(Predicate): Returns true if zero elements match the condition.java
+boolean noNegatives = numbers.stream().noneMatch(n -> n < 0);
+Use code with caution.
+
+🔄 5. Iteration & Action Operations
+
+These are used when you want to execute a direct action or side-effect on every remaining item rather than returning a value.
+• forEach(Consumer): Iterates over every element in the exact order determined by the stream source.java
+stream.forEach(System.out::println);
+Use code with caution.
+• forEachOrdered(Consumer): Forces the stream to process elements strictly in their original layout order, even if the stream is running across multiple CPU threads in parallel (.parallelStream()).java
+parallelStream.forEachOrdered(System.out::println);
+Use code with caution.
+Would you like to try a mini coding challenge using reduce() or anyMatch() to see how these math and matching operations work in practice?
+
+---
+
+When creating your stream pipelines, you should follow this rule of thumb: Always start the stream from the concrete class (like ArrayList, HashSet, or HashMap), but collect the results back into the general interface (List, Set, or Map).
+Here is exactly how this breaks down in practice.
+
+1. The Starting Line (The Source)
+
+You can call .stream() on any class or interface that belongs to the Java Collections Framework. Both options below are perfectly correct to start a stream:
+java
+// Option A: Starting from the interface (Works perfectly)
+List<String> list1 = new ArrayList<>();
+list1.stream()...
+
+// Option B: Starting from the concrete class (Works perfectly too)
+ArrayList<String> list2 = new ArrayList<>();
+list2.stream()...
+Use code with caution.
+Because ArrayList implements the List interface, and List contains the .stream() blueprint method, you can start a stream from either one without any difference in performance or features.
+Note for Maps: A HashMap does not have a direct .stream() method. To stream a map, you must choose what part of it you want to stream:
+• map.keySet().stream() (Stream of keys)
+• map.values().stream() (Stream of values)
+• map.entrySet().stream() (Stream of key-value pairs)
+
+2. The Finish Line (The Terminal Operation)
+
+This is where the distinction becomes critical. When you use a terminal operation like Collectors.toList() or Collectors.groupingBy(), Java returns the general interface by default, not the concrete implementation.
+java
+// 🏆 RIGHT: Java returns a general List contract
+List<String> result = names.stream()
+.filter(n -> n.length() > 3)
+.collect(Collectors.toList());
+
+// ❌ WRONG: This will cause a compilation error!
+ArrayList<String> result = names.stream()
+.filter(n -> n.length() > 3)
+.collect(Collectors.toList());
+Use code with caution.
+Collectors.toList() guarantees it will return some type of object that acts like a List, but it does not guarantee it will specifically be an ArrayList. Tying your final variable to ArrayList will break the compiler.
+
+Summary Checklist for Clean Streams
+
+• Start: Use whatever variable type you already have (List, ArrayList, HashSet, etc.). They all support .stream().
+• Finish: Always store the stream's final collected output inside general interface types like List, Set, or Map to keep your code standard and flexible.
+Would you like to move on to Problem 6 now and see how to flatten nested structures using flatMap, or do you have any more questions about structuring types?
+
+---
+
+While a standard HashMap offers fast O(1) lookup performance, it provides absolutely no guarantees about the order of its keys. If you iterate through it, your data will look completely scrambled.
+To solve this, Java provides two specialized implementations: LinkedHashMap (which maintains insertion or access order) and TreeMap (which automatically sorts your keys).
+Let's look at how they function under the hood and explore the navigational methods that make TreeMap exceptionally powerful.
+
+1. LinkedHashMap — The Predictable Order Map
+
+A LinkedHashMap is simply a HashMap with a doubly-linked list running through all its entries.
+• How it works: Under the hood, it maintains the exact same bucket array as a HashMap. However, each node contains two extra pointers: before and after. These pointers hook every entry together in a continuous chain.
+• Performance: It performs lookups at O(1) speed, with a fractionally higher memory footprint due to the link pointers.
+• Ordering Modes: You can configure a LinkedHashMap to maintain two different types of order: 1. Insertion Order (Default): Iterating over the map returns elements in the exact order they were put in. 2. Access Order: The map automatically rearranges its entries. Every time you call map.get() or map.put(), that specific item is yanked from its current position and moved straight to the very end of the chain.
+
+💡 Real-World Use Case: Building an LRU (Least Recently Used) Cache
+
+Because access-order mode pushes recently accessed items to the end of the chain, the items at the front of the chain are automatically the oldest and least used. You can override its removeEldestEntry() method to create a self-cleaning memory cache in just a few lines of code.
+
+2. TreeMap — The Automatically Sorted Map
+
+A TreeMap completely discards the bucket array and hashing system. Instead, it stores its data inside a Red-Black Tree (a self-balancing binary search tree).
+• How it works: Every time you add a key-value pair, it is inserted into the tree structure based on the value of the key.
+• Performance: Because it utilizes a binary search tree, finding, adding, or deleting items takes logarithmic time: \(O(\log n)\).
+• The Sorting Rule: Keys must either implement the Comparable interface (natural ordering like numbers or alphabetical text), or you must pass a custom Comparator when creating the map.
+
+🗺️ Navigating a TreeMap (NavigableMap Methods)
+
+Because TreeMap implements the NavigableMap interface, it acts less like a simple lookup table and more like a searchable directory. You can query the map for close matches, bounds, and ranges using these specialized methods:
+
+🎯 Closest-Match Queries (Math Boundary Lookups)
+
+Imagine you have a TreeMap of tax brackets or pricing tiers: [100, 200, 500].
+• floorKey(K key): Returns the greatest key less than or equal to the given key.
+• map.floorKey(250) → Returns 200
+• ceilingKey(K key): Returns the least key greater than or equal to the given key.
+• map.ceilingKey(250) → Returns 500
+• lowerKey(K key): Returns the strictly greatest key less than the given key (<).
+• higherKey(K key): Returns the strictly least key greater than the given key (>).
+
+✂️ Sub-Range Extraction (Slicing Your Map)
+
+You can instantly slice out sub-sections of your map without copying the underlying data:
+• subMap(fromKey, toKey): Extracts a window of data between two keys.
+• headMap(toKey): Returns everything from the very beginning up to your specified key.
+• tailMap(fromKey): Returns everything from your specified key all the way to the very end.
+
+🏎️ Quick Extrems & Direction Flips
+
+• firstEntry() / lastEntry(): Instantly grabs the absolute lowest or highest key-value pairs in the map (O(1) operation).
+• pollFirstEntry() / pollLastEntry(): Grabs and deletes the absolute lowest or highest entry (perfect for building priority queues).
+• descendingMap(): Returns a backward view of your entire map, flipping the sorting logic from ascending to descending instantly.
+
+Architectural Head-to-Head Comparison
+
+Feature HashMap LinkedHashMap TreeMap
+Underlying Structure Array + Linked List / Red-Black Tree Buckets Array Buckets + Global Doubly-Linked List Red-Black Tree Structure
+Iteration Order Completely Unpredictable Insertion or Access Order Sorted Order (Natural / Comparator)
+Time Complexity O(1) average O(1) average \(O(\log n)\) guaranteed
+Allows null Keys? Yes (Goes to bucket 0) Yes No (Throws NullPointerException)
+
+Would you like to try writing a mini program where we use a TreeMap to build a tiered shipping cost calculator using the .ceilingEntry() or .floorEntry() navigation methods?
+
+---
+
+In a standard HashMap, concurrent access by multiple threads can lead to subtle bugs or infinite loops during resizing. While Collections.synchronizedMap() fixes this by locking the entire map, it completely destroys performance because threads must wait in line to access it.
+ConcurrentHashMap solves this problem by allowing highly concurrent, thread-safe access without locking the whole structure.
+Here is exactly how ConcurrentHashMap achieves its thread-safe execution under the hood.
+
+1. The Modern Architecture: Node-Level Locking (Java 8+)
+
+In older versions of Java (Java 7 and below), ConcurrentHashMap used a technique called Segment Locking, which divided the map into 16 distinct chunks (segments).
+In modern Java (Java 8 and newer), this design was replaced with a highly optimized, granular system:
+• Bucket-Level Control: Instead of locking an entire section of the map, Java now locks only the single bucket head currently being modified.
+• Non-Blocking Reads (get): The get(key) operation is completely lock-free. It relies on the volatile keyword applied to the internal node arrays and values. This ensures that any update made by a writing thread is instantly visible to reading threads, allowing infinite numbers of threads to read data simultaneously without ever waiting.
+• Synchronized Writing (put): When a thread tries to insert or update an item using put(), it locks only the first node of that specific bucket using a standard synchronized block. Threads updating data in other buckets can run at the exact same time without any delay.
+
+2. Lock-Free Insertions: CAS (Compare-And-Swap)
+
+What happens if a bucket is completely empty, and a thread wants to insert the very first item? Locking the bucket head would be a waste of CPU cycles. Instead, ConcurrentHashMap uses an ultra-fast hardware-level optimization called CAS (Compare-And-Swap).
+• The thread inspects the bucket slot using a low-level atomic memory operation.
+• It says: "If this bucket slot is currently null, immediately set it to my new Node."
+• If another thread snuck in and populated the bucket a fraction of a millisecond earlier, the CAS operation fails safely. The thread then loops back, realizes the bucket is no longer empty, and falls back to a standard synchronized block on that bucket head.
+
+3. Concurrent Resizing (Multi-Threaded Helping)
+
+Resizing a standard map is a heavy O(n) operation. If a single thread had to resize a massive concurrent map alone, it would freeze the application. ConcurrentHashMap introduces a unique system called Concurrent Helping During Transfer:
+• Forwarding Nodes (MOVED): When the map reaches its resizing threshold, a transfer process starts. As buckets are successfully migrated to the new, larger array, a special placeholder node called a ForwardingNode (with a hash value of -1 or MOVED) is placed at the head of the old bucket.
+• Cooperative Resizing: If Thread A is trying to write to a bucket and hits a ForwardingNode, it realizes a resize is actively happening. Instead of waiting idly, Thread A pauses its write operation and actively helps transfer other buckets to the new array. Once the transfer is completed by the team of threads, Thread A resumes its write operation in the new array.
+
+4. Counter Optimization: LongAdder Style Mechanics
+
+In a highly concurrent app, tracking the total size of the map (map.size()) using a single volatile int count would create a massive performance bottleneck because every single thread would be fighting to update the exact same memory address.
+To fix this, ConcurrentHashMap uses an architecture similar to Java's LongAdder:
+• It maintains a base count variable along with an internal Counter Cell Array.
+• When multiple threads are writing simultaneously, Java distributes them across different cells in the counter array to avoid conflicts.
+• When you call map.size(), Java loops through the array, adds up the values of the individual cells, adds the base count, and returns the unified total.
+
+Summary Internal Mechanism Workflow
+
+[ConcurrentHashMap]
+│
+├──► Reading (get): Always O(1) Lock-Free (Volatile array reads)
+│
+├──► Writing (put):
+│ ├─── Empty Bucket? ──► Use Atomic CAS (Lock-free insertion)
+│ ├─── Active Bucket? ─► Synchronize ONLY the first Node of that bucket
+│ └─── Hit a 'MOVED' Node? ──► Thread pauses to help resize the map
+│
+└──► Size Tracking: Counter Cell Array prevents bottlenecking on map.size()
+Would you like to see a quick code pattern illustrating how using map.put() inside a multi-threaded loop can still cause race conditions, and how to fix it using atomic methods like computeIfPresent() or merge()?
+
+---
+
+You should add these notes under the topic "Java Constructors" or "Advanced Constructor Design Patterns" within your Object-Oriented Programming (OOP) section.
+Here is a clear, structured rewrite of these definitions for your notes, including real-world code use cases.
+
+🔨 Advanced Java Constructor Patterns
+
+Unlike some languages (like C++), Java does not provide default "copy constructors" out of the box. Constructors in Java are highly configurable blocks used to define instantiation strategies and control access boundaries.
+
+👥 1. The Copy Constructor
+
+A copy constructor is a user-defined constructor that initializes a new object by cloning the values of another existing object of the same class.
+• Purpose: It gives you a clean way to create a deep copy or a duplicate of an object without affecting the original one.
+• Alternative: It is widely considered a cleaner, safer alternative to overriding Java's built-in Object.clone() method.
+
+💻 Code Example:
+
+java
+class Book {
+String title;
+int pages;
+
+    // Standard Constructor
+    Book(String title, int pages) {
+        this.title = title;
+        this.pages = pages;
+    }
+
+    // 🏆 Copy Constructor
+    Book(Book otherBook) {
+        this.title = otherBook.title; // Copies value from existing instance
+        this.pages = otherBook.pages;
+    }
+
+}
+Use code with caution.
+
+🔒 2. The Private Constructor
+
+A private constructor hides a class's constructor from the outside world by changing its access modifier to private. This completely prevents other classes from calling new MyClass().
+
+When to use it:
+
+• Utility Classes: For classes that only contain static helper methods (like java.util.Collections or java.lang.Math). You don't want anyone creating an object of a math tool.
+• Singleton Pattern: When you want to ensure that only one single instance of a class ever exists in memory throughout the entire runtime of the application (e.g., a database connection pool).
+
+💻 Code Example (Singleton Pattern):
+
+java
+class DatabaseConnection {
+// 1. Create the single instance internally
+private static DatabaseConnection instance = new DatabaseConnection();
+
+    // 2. 🏆 Private Constructor blocks 'new' from outside
+    private DatabaseConnection() {}
+
+    // 3. Provide a global point of access
+    public static DatabaseConnection getInstance() {
+        return instance;
+    }
+
+}
+Use code with caution.
+Would you like to see how a copy constructor handles a deep copy vs. a shallow copy when an object contains a reference to another object, like a List or a Custom Class?
 
 ---

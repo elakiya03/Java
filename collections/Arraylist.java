@@ -8,7 +8,7 @@ public class Arraylist {
     public static void main(String[] args) {
         List<Integer> list1 = new ArrayList<Integer>(); // List methods only
 
-        ArrayList list2 = new ArrayList(); // ArrayList specific methods
+        // ArrayList<> list2 = new ArrayList<>(); // ArrayList specific methods
 
         // 1. Add
         list1.add(1);
